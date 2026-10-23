@@ -1,0 +1,33 @@
+section,key,value,note
+factor_eta2,level,0.6167,
+factor_eta2,threshold,0.1909,
+factor_eta2,wavelet,0.0304,
+factor_eta2,boundary,0.0,
+level_boundary,L2,2.8037,"aL<= 12.5 Hz, covers=True"
+level_boundary,L3,2.8037,"aL<= 6.25 Hz, covers=True"
+level_boundary,L4,2.8037,"aL<= 3.125 Hz, covers=True"
+level_boundary,L5,17.1247,"aL<= 1.5625 Hz, covers=False"
+level_boundary,L6,21.9494,"aL<= 0.7812 Hz, covers=False"
+level_boundary,L7,17.1785,"aL<= 0.3906 Hz, covers=False"
+level_boundary,L8,19.7997,"aL<= 0.1953 Hz, covers=False"
+level_boundary,L9,19.7077,"aL<= 0.0977 Hz, covers=False"
+level_boundary,L10,19.9538,"aL<= 0.0488 Hz, covers=False"
+L4_per_wavelet_best,bior3.5,2.5086,benefit
+L4_per_wavelet_best,db6,2.5359,benefit
+L4_per_wavelet_best,sym6,2.537,benefit
+L4_per_wavelet_best,bior6.8,2.54,benefit
+L4_per_wavelet_best,sym8,2.5415,benefit
+L4_per_wavelet_best,rbio6.8,2.5429,benefit
+L4_per_wavelet_best,sym4,2.5486,benefit
+L4_per_wavelet_best,db4,2.5801,benefit
+L4_per_wavelet_best,db10,2.7802,no_benefit
+L4_per_wavelet_best,coif4,2.7875,no_benefit
+L4_per_wavelet_best,dmey,2.7896,no_benefit
+L4_per_wavelet_best,db8,2.7906,no_benefit
+L4_per_wavelet_best,bior4.4,2.7945,no_benefit
+L4_per_wavelet_best,coif2,2.7976,no_benefit
+L4_per_wavelet_best,haar,2.8037,no_benefit
+decision,pool_size,675.0,
+decision,gap_vs_best_bpm,0.031903740705516714,
+decision,n_strictly_better,21.0,
+decision,pareto_n_front,31.0,

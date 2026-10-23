@@ -4,6 +4,8 @@
 Dissect the emo P02 counter-example: signal geometry, drift speed and phase quality against other subjects."""
 from __future__ import annotations
 
+from paths import EMO_MULTI, OUT_ROOT
+
 import json
 from pathlib import Path
 
@@ -16,8 +18,8 @@ FS = 100.0
 R_BIN = 0.04505
 BIN_LO, BIN_HI = 9, 28
 DROP_S = 10.0
-DIR = Path(r"C:\Users\yxh\Desktop\emo_dataset\raw\_multi")
-OUT = Path(r"C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset")
+DIR = EMO_MULTI
+OUT = OUT_ROOT
 
 
 def bp(x, lo=0.1, hi=0.6):

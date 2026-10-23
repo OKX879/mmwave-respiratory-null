@@ -4,6 +4,8 @@
 Supplementary figure: trajectories and phase folding for every qualifying record with at least five deep dips."""
 from __future__ import annotations
 
+from paths import CAPSULE
+
 import sys
 from pathlib import Path
 
@@ -33,7 +35,7 @@ def main() -> int:
     })
 
     stems = [f"patient_{i}" for i in range(1, 21)
-             if (Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
+             if (CAPSULE
                  / f"patient_{i}.mat").exists()]
     rows = [analyse(s) for s in stems]
     elig_all = [r for r in rows if r["n_deep"] >= 5 and np.isfinite(r["Rbar"])]

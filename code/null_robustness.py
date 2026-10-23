@@ -4,6 +4,8 @@
 Robustness check 1: drift-window sensitivity, and how drift amplitude relates to fixed phase locking."""
 from __future__ import annotations
 
+from paths import EMO_PILOT
+
 import json
 import pickle
 import sys
@@ -22,7 +24,7 @@ from null_crossdataset import (  # noqa: E402
 )
 
 WINDOWS = (5.0, 10.0, 15.0, 20.0)
-EMO = Path(r"C:\Users\yxh\Desktop\emo_dataset\raw\_pilot")
+EMO = EMO_PILOT
 EMO_FS = 100.0
 
 

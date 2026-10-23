@@ -4,6 +4,8 @@
 Null test: measure the complex trajectory directly on the Range-FFT cube of Zhang et al. 2024."""
 from __future__ import annotations
 
+from paths import CAPSULE
+
 import argparse
 import sys
 from pathlib import Path
@@ -14,7 +16,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-DATA = Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
+DATA = CAPSULE
 FS = 100.0
 
 

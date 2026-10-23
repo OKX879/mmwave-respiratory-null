@@ -9,12 +9,13 @@ No data is redistributed here. All four datasets are public; obtain them from th
 | Zenodo 110-subject record | `10.5281/zenodo.18599983` | Large-sample null rate | `real_pilot/`, `real_rc2/`, `real_matrix/` |
 | Zenodo emotion record | `10.5281/zenodo.16900785` | Control dataset | `emo_matrix/`, `emo_matrix_full/` |
 
-Scripts read bare relative paths, for example `"matrix_out_t4"` or
-`"synthetic_data_clean/grid.npz"`, with the repository root as working directory. Renaming a
-directory breaks them; twenty of these paths are hard-coded.
+Scripts resolve external roots through `code/paths.py` (`MMWAVE_DATA_ROOT`,
+`MMWAVE_OUT_ROOT`, `MMWAVE_PRODUCT_ROOT`), defaulting to `~/Desktop` and the repository root.
+No absolute machine-specific path is hard-coded, so a fresh clone runs without edits.
 
 Most `matrix_out*` directories are caches, not raw data. Regenerate them with `matrix_eval.py`,
 `exp_A_group.py` and `lei_scan_all.py`; the bandwidth sweep has to run before anything that reads
-`matrix_out_*`.
+`matrix_out_*`. A snapshot of the derived tables (without the `*_raw*.csv` intermediates) is
+committed under `results/`.
 
 Each dataset keeps its own licence. Link to the DOI rather than re-hosting the records.

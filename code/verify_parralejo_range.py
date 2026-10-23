@@ -1,3 +1,4 @@
+from paths import DB_RECORDS
 """校验 parralejo 数据集的量程与门索引，对照 radar_chirpConfig.json。
 Check the Parralejo dataset range and bin indexing against radar_chirpConfig.json."""
 import json
@@ -7,7 +8,7 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(r'C:\Users\yxh\Desktop\db_records')
+ROOT = DB_RECORDS
 R_BIN_AXIS = 0.31724          # 数据自带距离轴步进
 C = 3e8
 

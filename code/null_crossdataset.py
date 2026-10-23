@@ -4,6 +4,8 @@
 Cross-dataset null analysis on the capsule set (20 cases, 100 Hz) and Parralejo (110 subjects, 440 segments, 10 Hz)."""
 from __future__ import annotations
 
+from paths import CAPSULE, DB_RECORDS
+
 import json
 import pickle
 import warnings
@@ -18,8 +20,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "null_crossdataset"
-CAP_ROOT = Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
-PAR_ROOT = Path(r"C:\Users\yxh\Desktop\db_records")
+CAP_ROOT = CAPSULE
+PAR_ROOT = DB_RECORDS
 R_BIN_PAR = 0.31228381041666664
 MIN_SEP_S = 0.25
 PROM_FRAC = 0.15

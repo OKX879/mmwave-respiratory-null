@@ -5,6 +5,8 @@ First calibration of rc2, the cross-range-bin beat coherence, on real data."""
 
 from __future__ import annotations
 
+from paths import CAPSULE
+
 import argparse
 import sys
 import time
@@ -22,7 +24,7 @@ from criteria_lib import evaluate_all, estimate_hr_psd, DISPLAY_BAND   # noqa: E
 from matrix_eval import decompose_dwt                                  # noqa: E402
 from real_eval import BASES, LEVELS, THRESHOLDS, FS                    # noqa: E402
 
-DATA = Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
+DATA = CAPSULE
 REAL = HERE / "real_data"
 G = "hr_mae_bpm"
 

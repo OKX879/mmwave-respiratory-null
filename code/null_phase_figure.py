@@ -4,6 +4,8 @@
 Two-panel representative figure: the complex-plane trajectory and the respiration-phase folding."""
 from __future__ import annotations
 
+from paths import CAPSULE
+
 import json
 from pathlib import Path
 
@@ -12,7 +14,7 @@ import numpy as np
 from scipy.signal import butter, find_peaks, hilbert, sosfiltfilt
 
 HERE = Path(__file__).resolve().parent
-DATA = Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
+DATA = CAPSULE
 OUT = HERE / "figs"
 FS = 100.0
 DEEP_FRAC = 0.35      # 深凹陷阈值：0.35 x 中位包络

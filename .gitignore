@@ -32,6 +32,10 @@ exp_out/
 *.fls
 *.fdb_latexmk
 
+# ---- Results snapshot: keep tracked (raw matrices stay excluded) ----
+!results/
+!results/**
+
 # ---- OS / editor ----
 .DS_Store
 Thumbs.db

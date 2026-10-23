@@ -4,12 +4,14 @@
 Does Q_D ever trigger on the 20 capsule records? A per-bin review of D."""
 from __future__ import annotations
 
+from paths import CAPSULE
+
 from pathlib import Path
 
 import h5py
 import numpy as np
 
-DATA = Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
+DATA = CAPSULE
 NPZ = Path(__file__).resolve().parent / "real_data"
 DARK = 1e-3
 D_ONSET, D_SAT = 0.01, 0.05      # 与 bin_scorer.py: 1% 起罚、5% 饱和，w_D=0.25

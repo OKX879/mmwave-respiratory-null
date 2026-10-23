@@ -4,6 +4,8 @@
 emo null pilot, P01, 17 trials."""
 from __future__ import annotations
 
+from paths import EMO_PILOT, OUT_ROOT
+
 import json
 import sys
 from pathlib import Path
@@ -18,8 +20,8 @@ R_BIN = 0.04505
 BIN_LO, BIN_HI = 9, 28          # 0.4-1.2 m
 DROP_S = 10.0
 PILOT = (Path(sys.argv[1]) if len(sys.argv) > 1
-         else Path(r"C:\Users\yxh\Desktop\emo_dataset\raw\_pilot"))
-OUT = Path(r"C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset") / f"emo_{PILOT.name}"
+         else EMO_PILOT)
+OUT = OUT_ROOT / f"emo_{PILOT.name}"
 
 
 def bp_complex(x, lo=0.1, hi=0.6):

@@ -5,6 +5,8 @@ emo_dataset cross-hardware test: IWR6843 at 60 GHz, 15 subjects x 19 trials, PPG
 
 from __future__ import annotations
 
+from paths import EMO_PROCESSED
+
 import argparse
 import json
 import time
@@ -20,7 +22,7 @@ sys.path.insert(0, str(HERE))
 from real_eval import (BASES, LEVELS, THRESHOLDS, BOUNDARY_MAIN, BOUNDARY_EXTRA,
                        FS, build_pool, eval_case, max_level)          # noqa: E402
 
-BASE = Path(r"C:\Users\yxh\Desktop\emo_dataset\processed\02_processed_data")
+BASE = EMO_PROCESSED
 FS_PPG = 200.0
 WIN_S = 20.0
 

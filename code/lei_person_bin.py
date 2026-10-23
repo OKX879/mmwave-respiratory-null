@@ -4,6 +4,8 @@
 Select bins under the dataset's true range constraints and recheck the resolution effect."""
 from __future__ import annotations
 
+from paths import OUT_ROOT
+
 from pathlib import Path
 
 import numpy as np
@@ -12,7 +14,7 @@ import pandas as pd
 from lei_pilot import load, ROOT, R_BIN, FS, bp, slow_mean, rayleigh
 from scipy.signal import find_peaks
 
-OUT = Path(r'C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset')
+OUT = OUT_ROOT
 R_TRUE = {1: (1.0, 1.0), 2: (1.4, 1.4), 3: (1.4, 1.0), 4: (1.0, 0.6), 5: (1.4, 1.0),
           6: (0.6, 1.0), 7: (0.6, 0.6), 8: (1.0, 1.0), 9: (1.4, 1.4)}
 BASES = [ROOT / '1_AsymmetricalPosition' / '1_Radar_Raw_Data',

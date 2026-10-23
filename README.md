@@ -11,8 +11,9 @@ bandwidth is the design knob that sets how often it happens.
 
 | Path | Contents |
 |---|---|
-| `code/` | 80 Python scripts |
+| `code/` | 81 Python scripts |
 | `figs/` | 9 figures, vector PDF and PNG |
+| `results/` | Result tables (CSV); no raw data — see `results/README.md` |
 | `CODE_INDEX.md` | what each script does |
 
 ## Run
@@ -21,7 +22,12 @@ bandwidth is the design knob that sets how often it happens.
 pip install -r requirements.txt
 ```
 
-Run from the repository root; data directories must be named as in `DATA.md`.
+Run from the repository root. Data roots are resolved in `code/paths.py` and can be overridden:
+
+```bash
+export MMWAVE_DATA_ROOT=~/Desktop        # where the four datasets live
+export MMWAVE_OUT_ROOT=./null_crossdataset
+```
 
 ```bash
 python code/paper_figures_v3.py      # Fig. 1, S1, S2, S5
@@ -61,7 +67,7 @@ python code/null_phase_figure.py     # Fig. S3
 ## Data
 
 Not included. Four public datasets, listed in `DATA.md` with DOIs and the directory names the
-scripts expect.
+scripts expect. `results/` holds the derived tables only.
 
 ## Citation
 

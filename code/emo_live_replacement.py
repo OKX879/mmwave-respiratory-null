@@ -4,6 +4,8 @@
 Use emo data in place of live capture: the D distribution and the apparent swing needed for the carrier-frequency argument."""
 from __future__ import annotations
 
+from paths import EMO_MULTI, OUT_ROOT
+
 import json
 from pathlib import Path
 
@@ -15,8 +17,8 @@ from scipy.signal import butter, sosfiltfilt
 FS = 100.0
 BIN_LO, BIN_HI = 9, 28
 DROP = 1000
-DIR = Path(r"C:\Users\yxh\Desktop\emo_dataset\raw\_multi")
-OUT = Path(r"C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset")
+DIR = EMO_MULTI
+OUT = OUT_ROOT
 
 
 def bp(x, lo=0.1, hi=0.6):

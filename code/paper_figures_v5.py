@@ -4,6 +4,8 @@
 New figures for v5: the resolution effect and three-bandwidth trajectories at one position, position 2 repeat 2."""
 from __future__ import annotations
 
+from paths import FIGS, OUT_ROOT
+
 from pathlib import Path
 
 import matplotlib
@@ -15,8 +17,8 @@ from scipy.signal import find_peaks
 
 from lei_pilot import load, ROOT, R_BIN, bp
 
-OUT = Path(r'c:\Users\yxh\Desktop\2\runtime\小波基研究\figs')
-CSV = Path(r'c:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset\lei_person_bin.csv')
+OUT = FIGS
+CSV = OUT_ROOT / "lei_person_bin.csv"
 BWS = [3.0, 2.5, 2.0]
 COL = {3.0: '#4C72B0', 2.5: '#DD8452', 2.0: '#55A868'}
 EX_DIR = ROOT / '1_AsymmetricalPosition' / '1_Radar_Raw_Data' / 'position_ (2)'

@@ -4,6 +4,8 @@
 Front-end feasibility probe on the Parralejo 110-subject dataset at 10 Hz with 31.2 cm range bins."""
 from __future__ import annotations
 
+from paths import DB_RECORDS
+
 import pickle
 import zlib
 from pathlib import Path
@@ -12,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.signal import butter, find_peaks, sosfiltfilt
 
-ROOT = Path(r'C:\Users\yxh\Desktop\db_records')
+ROOT = DB_RECORDS
 TESTS = [('Sitting', 'Rest'), ('Sitting', 'Post-exercise'),
          ('Lying', 'Rest'), ('Lying', 'Post-exercise')]
 

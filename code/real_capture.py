@@ -5,6 +5,8 @@ Real-data replay: capture the production displacement signal from the capsule (R
 
 from __future__ import annotations
 
+from paths import PRODUCT_ROOT
+
 import argparse
 import logging
 import sys
@@ -13,7 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
-PRODUCT = Path(r"c:\Users\yxh\Desktop\2\runtime\产品")
+PRODUCT = PRODUCT_ROOT
 sys.path.insert(0, str(PRODUCT))
 
 from benchmark_v1 import DATA, FS, load_patient, run_pipeline_capture  # noqa: E402

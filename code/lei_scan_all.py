@@ -4,6 +4,8 @@
 Full Lei sweep: 9 positions by 6 repeats by 3 bandwidths."""
 from __future__ import annotations
 
+from paths import OUT_ROOT
+
 import json
 from pathlib import Path
 
@@ -12,7 +14,7 @@ import pandas as pd
 
 from lei_pilot import analyse, ROOT
 
-OUT = Path(r'C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset')
+OUT = OUT_ROOT
 RAW = ROOT / '1_AsymmetricalPosition' / '1_Radar_Raw_Data'
 RAW2 = ROOT / '2_SymmetricalPosition' / '1_Radar_Raw_Data'
 EXPECT = 1200 * 3 * 4 * 200 * 2 * 2   # bytes（int16 × I/Q）

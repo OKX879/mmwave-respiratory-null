@@ -4,6 +4,8 @@
 Supplementary figures for paper v3: geometry, failure region, r-D bridge, conditional breath-hold, alignment, the P02 counter-example, window sensitivity and carrier frequency."""
 from __future__ import annotations
 
+from paths import EMO_MULTI
+
 from pathlib import Path
 
 import numpy as np
@@ -14,7 +16,7 @@ from scipy.signal import butter, find_peaks, sosfiltfilt
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "null_crossdataset"
 FIG = HERE / "figs"
-EMO = Path(r"C:\Users\yxh\Desktop\emo_dataset\raw\_multi")
+EMO = EMO_MULTI
 
 import matplotlib
 matplotlib.use("Agg")

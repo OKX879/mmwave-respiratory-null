@@ -4,6 +4,8 @@
 Lei dataset: position 1, six repeats by three bandwidths."""
 from __future__ import annotations
 
+from paths import OUT_ROOT
+
 import json
 from pathlib import Path
 
@@ -11,7 +13,7 @@ import numpy as np
 
 from lei_pilot import analyse, POS
 
-OUT = Path(r'C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset')
+OUT = OUT_ROOT
 
 
 def main():

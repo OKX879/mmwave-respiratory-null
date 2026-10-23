@@ -4,6 +4,8 @@
 Beat-level null test: complex-plane trajectory and amplitude dips in the cardiac band (0.8-2.5 Hz)."""
 from __future__ import annotations
 
+from paths import CAPSULE
+
 import argparse
 import sys
 from pathlib import Path
@@ -15,7 +17,7 @@ from scipy.signal import butter, sosfiltfilt, find_peaks
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-DATA = Path(r"C:\Users\yxh\Desktop\capsule-4604022-data\Minimum_dataset")
+DATA = CAPSULE
 OUT = HERE / "null_probe_out"
 FS = 100.0
 CARD = (0.8, 2.5)      # 心搏带（与准则库 CARD_BAND 一致）

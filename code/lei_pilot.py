@@ -4,18 +4,20 @@
 Lei 2024 dual-subject pilot: one position, three bandwidths; null geometry, phase and the discriminability of D."""
 from __future__ import annotations
 
+from paths import FMCW_DUAL, OUT_ROOT
+
 import json
 from pathlib import Path
 
 import numpy as np
 from scipy.signal import butter, find_peaks, sosfiltfilt
 
-ROOT = Path(r'C:\Users\yxh\Desktop\FMCW radar-based multi-person vital sign monitoring data\FMCW radar-based multi-person vital sign monitoring data')
+ROOT = FMCW_DUAL
 POS = ROOT / '1_AsymmetricalPosition' / '1_Radar_Raw_Data' / 'position_ (1)'
 FS = 20.0
 R_BIN = {3: 0.05, 2.5: 0.06, 2: 0.075}
 BIN_MIN, BIN_MAX = 8, 32          # 0.4-1.6 m（3GHz 基准；按 rb 换算见下）
-OUT = Path(r'C:\Users\yxh\Desktop\2\runtime\小波基研究\null_crossdataset')
+OUT = OUT_ROOT
 
 
 def load(fp):

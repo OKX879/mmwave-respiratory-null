@@ -4,6 +4,8 @@
 C1: prospective first-half to second-half check on an independent front end."""
 from __future__ import annotations
 
+from paths import EMO_MULTI
+
 from pathlib import Path
 
 import numpy as np
@@ -20,7 +22,7 @@ DEPTH, PROM = 0.35, 0.15        # the paper's event definition
 LEI_THRESHOLD_30S = 5           # rule R1 as calibrated on Lei
 
 HERE = Path(__file__).resolve().parent
-RAW = Path(r"C:\Users\yxh\Desktop\emo_dataset\raw\_multi")
+RAW = EMO_MULTI
 OUT = HERE / "exp_out"
 
 

@@ -5,6 +5,8 @@ Quick pilot: does the structural level bound L <= 4 hold on real signals?"""
 
 from __future__ import annotations
 
+from paths import PRODUCT_ROOT
+
 import argparse
 import sys
 from pathlib import Path
@@ -17,7 +19,7 @@ sys.path.insert(0, str(HERE))
 from matrix_eval import decompose_dwt                       # noqa: E402
 from criteria_lib import estimate_hr_psd, DISPLAY_BAND       # noqa: E402
 
-CACHE = Path(r"c:\Users\yxh\Desktop\2\runtime\产品\band_sweep_cache")
+CACHE = PRODUCT_ROOT / "band_sweep_cache"
 FS = 100.0
 
 BASES = ["bior3.5", "db4", "sym4", "haar", "db8"]
