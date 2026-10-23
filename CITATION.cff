@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this code or these results, please cite the manuscript below."
+message: "If you use this code, please cite this repository."
 title: "mmwave-respiratory-null"
 abstract: "Code and results for a closed-form depth bound on respiratory-phase multipath nulls in mmWave cardiac radar: when the static and breathing phasors in one range bin become comparable in amplitude, the complex trajectory passes through the origin and the phase collapses; chirp bandwidth is identified as the design knob that sets the null rate."
 authors:
@@ -14,12 +14,3 @@ keywords:
   - vital signs
   - multipath null
   - phase demodulation
-preferred-citation:
-  type: article
-  title: "Respiratory-Phase Multipath Nulls in mmWave Cardiac Monitoring: Depth Bound, Saturation, and a Deployable Criterion"
-  authors:
-    - family-names: "Yu"
-      given-names: "XinHao"
-  year: 2026
-  journal: "IEEE Transactions on Microwave Theory and Techniques"
-  note: "Manuscript submitted for publication"
