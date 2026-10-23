@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""F 组：两个人落在同一个距离门里时，深零点会被抑制吗？"""
+"""F 组：两个人落在同一个距离门里时，深零点会被抑制吗？
+Group F: are deep nulls suppressed when two people share one range bin?"""
 from __future__ import annotations
 
 from pathlib import Path

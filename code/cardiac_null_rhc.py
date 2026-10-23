@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""RHC 谐波消除后的逐搏零点复检（复数域陷波，不破坏复平面几何）。"""
+"""RHC 谐波消除后的逐搏零点复检（复数域陷波，不破坏复平面几何）。
+Beat-level null recheck after RHC harmonic cancellation (complex-domain notch, geometry preserved)."""
 from __future__ import annotations
 
 import argparse
@@ -21,7 +22,8 @@ PROTECT_HZ = 0.06  # 与心率相距小于此值 → 不陷波（保护心搏）
 
 
 def notch_complex(z: np.ndarray, freqs: list[float], bw: float = BW) -> np.ndarray:
-    """在复数频谱上对给定频率做窄带陷波（零相位、保持共轭对称）。"""
+    """在复数频谱上对给定频率做窄带陷波（零相位、保持共轭对称）。
+Narrowband notch at a given frequency in the complex spectrum: zero phase, conjugate symmetry kept."""
     n = len(z)
     Z = np.fft.fft(z)
     f = np.fft.fftfreq(n, 1 / FS)

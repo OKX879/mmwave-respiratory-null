@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""无参考评价准则库：14 个 bin 级打分函数，供 matrix_eval 与 calibrate_criteria 调用。"""
+"""无参考评价准则库：14 个 bin 级打分函数，供 matrix_eval 与 calibrate_criteria 调用。
+Reference-free criteria library: 14 bin-level scoring functions used by matrix_eval and calibrate_criteria."""
 from __future__ import annotations
 
 import argparse
@@ -39,12 +40,14 @@ def _psd(x: np.ndarray, fs: float, nperseg: Optional[int] = None):
 
 
 def _psd_at(f: np.ndarray, P: np.ndarray, fq) -> np.ndarray:
-    """在任意频率处取 PSD（线性插值，端点截断）。"""
+    """在任意频率处取 PSD（线性插值，端点截断）。
+PSD at an arbitrary frequency, with linear interpolation and clamped endpoints."""
     return np.interp(np.asarray(fq, dtype=float), f, np.maximum(P, 1e-12))
 
 
 def _pairwise_coherence(rows: Sequence[np.ndarray]) -> float:
-    """一组（复数或实数）分量的两两相干均值。"""
+    """一组（复数或实数）分量的两两相干均值。
+Mean pairwise coherence over a set of complex or real components."""
     rows = [np.asarray(r) for r in rows]
     C = len(rows)
     if C < 2:
@@ -64,7 +67,8 @@ def _pairwise_coherence(rows: Sequence[np.ndarray]) -> float:
 # PB —— 生理先验类
 # ---------------------------------------------------------------------------
 def pb1_spectral_concentration(x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND) -> float:
-    """心搏带能量集中度：带内功率 / 全带功率。方向 up。"""
+    """心搏带能量集中度：带内功率 / 全带功率。方向 up。
+Cardiac-band energy concentration: in-band power over total power. Direction up."""
     f, P = _psd(x, fs)
     m = (f >= band[0]) & (f <= band[1])
     tot = float(np.sum(P))
@@ -77,7 +81,8 @@ def _refine_peak_freq(
     x: np.ndarray, fs: float, band: tuple[float, float], f_coarse: float,
     half_width_hz: float, df_target: float = 0.004, prefilter: bool = True, order: int = 4,
 ) -> float:
-    """在 f_coarse ± half_width 内精化峰频（零填充加窗 FFT + 抛物线插值）。"""
+    """在 f_coarse ± half_width 内精化峰频（零填充加窗 FFT + 抛物线插值）。
+Refine the peak within f_coarse +- half_width using a zero-padded windowed FFT and parabolic interpolation."""
     if not np.isfinite(f_coarse):
         return float(f_coarse)
     y = np.asarray(x, dtype=float)
@@ -116,7 +121,8 @@ def estimate_resp_freq(
     snr_min: float = 1.8,
     refine: bool = True,
 ) -> Optional[float]:
-    """估计呼吸基频 f_resp（Hz），口径对齐生产链 RHC 的估计器。"""
+    """估计呼吸基频 f_resp（Hz），口径对齐生产链 RHC 的估计器。
+Estimate the respiratory fundamental f_resp in Hz, matching the production RHC estimator."""
     n = len(x)
     if n < 256:
         return None
@@ -151,7 +157,8 @@ def pb2_resp_harmonic_residue(
     k_max: int = 6,
     x_for_fresp: Optional[np.ndarray] = None,
 ) -> float:
-    """呼吸谐波残余比 RHR：心率带内【落在 k·f_resp 附近】的能量 / 非谐波区能量。方向 down。"""
+    """呼吸谐波残余比 RHR：心率带内【落在 k·f_resp 附近】的能量 / 非谐波区能量。方向 down。
+Residual harmonic ratio: energy near k*f_resp inside the heart band over non-harmonic energy. Direction down."""
     f, P = _psd(x_card, fs)
     m = (f >= band[0]) & (f <= band[1])
     if not m.any():
@@ -179,7 +186,8 @@ def pb3_ibi_physio_yield(
     max_ms: float = 1500.0,
     height_factor: float = 0.5,
 ) -> dict:
-    """IBI 生理合格率（用生理先验当"软参考"）。主方向 up（合格率）。"""
+    """IBI 生理合格率（用生理先验当"软参考"）。主方向 up（合格率）。
+IBI physiological validity rate, using priors as a soft reference. Direction up."""
     x = np.asarray(x_card, dtype=float)
     std = float(np.std(x))
     if std <= 1e-12:
@@ -201,7 +209,8 @@ def pb3_ibi_physio_yield(
 
 
 def pb4_cardiac_amp_plausibility(x_card: np.ndarray, lo_mm: float = 0.02, hi_mm: float = 1.0) -> float:
-    """心搏位移幅度合理性（亚毫米）→ 返回 [0,1] 梯形隶属度。方向 up。"""
+    """心搏位移幅度合理性（亚毫米）→ 返回 [0,1] 梯形隶属度。方向 up。
+Plausibility of the beat displacement (sub-millimetre) as a trapezoidal membership in [0,1]. Direction up."""
     rms = float(np.sqrt(np.mean(np.asarray(x_card, dtype=float) ** 2)))
     if rms <= 0 or hi_mm <= lo_mm:
         return 0.0
@@ -213,7 +222,8 @@ def pb4_cardiac_amp_plausibility(x_card: np.ndarray, lo_mm: float = 0.02, hi_mm:
 def pb5_resp_cardiac_amp_ratio(
     x_resp: np.ndarray, x_card: np.ndarray, lo: float = 5.0, hi: float = 50.0
 ) -> float:
-    """呼吸/心跳幅度比合理性 → [0,1]。方向 up。"""
+    """呼吸/心跳幅度比合理性 → [0,1]。方向 up。
+Plausibility of the respiration-to-beat amplitude ratio, mapped to [0,1]. Direction up."""
     rr = float(np.sqrt(np.mean(np.asarray(x_resp, dtype=float) ** 2)))
     rc = float(np.sqrt(np.mean(np.asarray(x_card, dtype=float) ** 2)))
     if rc <= 0 or hi <= lo:
@@ -228,18 +238,21 @@ def pb5_resp_cardiac_amp_ratio(
 # RC —— 冗余一致性类（最可靠：不依赖生理假设）
 # ---------------------------------------------------------------------------
 def rc1_cross_channel_coherence(card_ch: Sequence[np.ndarray]) -> float:
-    """跨通道心搏相干（8 通道）。方向 up。真心跳在所有通道同步。"""
+    """跨通道心搏相干（8 通道）。方向 up。真心跳在所有通道同步。
+Cross-channel beat coherence over 8 channels. Direction up; a real beat is synchronous everywhere."""
     return _pairwise_coherence(card_ch)
 
 
 def rc2_cross_bin_coherence(card_bins: Sequence[np.ndarray]) -> float:
-    """跨距离格心搏相干（中心格 ±1）。方向 up。"""
+    """跨距离格心搏相干（中心格 ±1）。方向 up。
+Cross-range-bin beat coherence over the centre bin +/-1. Direction up."""
     return _pairwise_coherence(card_bins)
 
 
 def estimate_hr_psd(x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND,
                     refine: bool = True) -> float:
-    """简易心率估计（Welch 谱主峰 + 峰位精化）。口径同生产链的单路 PSD 主峰。"""
+    """简易心率估计（Welch 谱主峰 + 峰位精化）。口径同生产链的单路 PSD 主峰。
+Simple heart-rate estimate from the Welch peak with refinement, matching the production single-channel PSD peak."""
     f, P = _psd(x, fs)
     m = (f >= band[0]) & (f <= band[1])
     if not m.any() or float(P[m].max()) <= 0:
@@ -256,7 +269,8 @@ def rc3_cross_window_stability(
     n_sub: int = 4,
     hr_fn=estimate_hr_psd,
 ) -> float:
-    """跨窗稳定性：把窗切成 n_sub 个子窗各自估 HR，取 std（BPM）。方向 down。"""
+    """跨窗稳定性：把窗切成 n_sub 个子窗各自估 HR，取 std（BPM）。方向 down。
+Cross-window stability: split the window into n_sub sub-windows, take the sd of HR in BPM. Direction down."""
     x = np.asarray(x_card, dtype=float)
     L = len(x) // max(1, n_sub)
     if L < 64:
@@ -267,7 +281,8 @@ def rc3_cross_window_stability(
 
 
 def rc4_subband_consistency(card_per_res: Sequence[np.ndarray]) -> float:
-    """子带一致性：不同分辨率层重构出的心搏分量之间的一致度。方向 up。"""
+    """子带一致性：不同分辨率层重构出的心搏分量之间的一致度。方向 up。
+Subband consistency: agreement between beat components reconstructed at different resolution levels. Direction up."""
     return _pairwise_coherence(card_per_res)
 
 
@@ -275,7 +290,8 @@ def rc4_subband_consistency(card_per_res: Sequence[np.ndarray]) -> float:
 # SM —— 结构 / 数学类
 # ---------------------------------------------------------------------------
 def sm1_energy_conservation(x: np.ndarray, coeffs: Sequence[np.ndarray]) -> float:
-    """能量守恒偏差 |Σc² - Σx²| / Σx²。方向 down（仅对正交基有效）。"""
+    """能量守恒偏差 |Σc² - Σx²| / Σx²。方向 down（仅对正交基有效）。
+Energy conservation error |sum c^2 - sum x^2| / sum x^2. Direction down, orthogonal bases only."""
     e_t = float(np.sum(np.asarray(x, dtype=float) ** 2))
     e_w = sum(float(np.sum(np.asarray(c, dtype=float) ** 2)) for c in coeffs)
     return float(abs(e_w - e_t) / max(e_t, 1e-18))
@@ -284,7 +300,8 @@ def sm1_energy_conservation(x: np.ndarray, coeffs: Sequence[np.ndarray]) -> floa
 def sm2_component_leakage(
     x_resp: np.ndarray, x_card: np.ndarray, fs: float, band: tuple[float, float] = DISPLAY_BAND
 ) -> float:
-    """分量间泄漏：呼吸分量与心搏分量在频域的带内重叠度。方向 down。"""
+    """分量间泄漏：呼吸分量与心搏分量在频域的带内重叠度。方向 down。
+Inter-component leakage: in-band spectral overlap between the respiration and beat components. Direction down."""
     f, Pr = _psd(x_resp, fs)
     _, Pc = _psd(x_card, fs)
     m = (f >= band[0]) & (f <= band[1])
@@ -296,7 +313,8 @@ def sm2_component_leakage(
 
 
 def sm3_retained_energy_ratio(x: np.ndarray, recon: np.ndarray) -> float:
-    """重构保留能量比。**非单调** —— 只能做趋势监控，禁止进评分。"""
+    """重构保留能量比。**非单调** —— 只能做趋势监控，禁止进评分。
+Reconstruction energy ratio. Non-monotonic, so monitoring only and never used for scoring."""
     e_x = float(np.sum(np.asarray(x, dtype=float) ** 2))
     e_r = float(np.sum(np.asarray(recon, dtype=float) ** 2))
     return float(e_r / max(e_x, 1e-18))
@@ -305,7 +323,8 @@ def sm3_retained_energy_ratio(x: np.ndarray, recon: np.ndarray) -> float:
 def sm4_hps_prominence(
     x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND, order: int = 3
 ) -> float:
-    """HPS 谐波结构突出度：HPS(f)=P(f)·P(2f)·P(3f)… 主峰 / 带内中位背景。方向 up。"""
+    """HPS 谐波结构突出度：HPS(f)=P(f)·P(2f)·P(3f)… 主峰 / 带内中位背景。方向 up。
+HPS harmonic prominence: product of the first harmonics, peak over median in-band background. Direction up."""
     f, P = _psd(x, fs)
     Ps = np.maximum(P, 1e-12)
     hps = Ps.copy()
@@ -319,7 +338,8 @@ def sm4_hps_prominence(
 
 
 def sm5_ridge_smoothness(x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND) -> float:
-    """时频脊线连续性：心搏带瞬时频率（Hilbert 解析信号相位差分）的 std（Hz）。方向 down。"""
+    """时频脊线连续性：心搏带瞬时频率（Hilbert 解析信号相位差分）的 std（Hz）。方向 down。
+Time-frequency ridge continuity: sd of the instantaneous beat-band frequency from the Hilbert phase. Direction down."""
     y = _bandpass(x, fs, band)
     z = hilbert(y)
     ph = np.unwrap(np.angle(z))
@@ -368,7 +388,8 @@ _BY_KEY = {c.key: c for c in CRITERIA}
 
 def evaluate_all(res: dict, fs: float, *, resp_freq: Optional[float] = None,
                  pb5_range: tuple[float, float] = (5.0, 50.0)) -> dict:
-    """对一份分解产物计算全部可用准则。"""
+    """对一份分解产物计算全部可用准则。
+Compute every applicable criterion for one decomposition product."""
     out: dict[str, float] = {}
     card = res.get("card")
     resp = res.get("resp")
@@ -463,7 +484,8 @@ def _selftest(npz_path: Path, n_samples: int = 60, channels: int = 8) -> int:
         raw_rows.append(evaluate_all(res_raw, fs))
 
     def _stat(rows, key):
-        """取【中位数】：比值型准则尾部重，均值会被离群样本主导。"""
+        """取【中位数】：比值型准则尾部重，均值会被离群样本主导。
+Take the median: ratio-type criteria have heavy tails and the mean is dominated by outliers."""
         v = np.array([r.get(key, np.nan) for r in rows], dtype=float)
         v = v[np.isfinite(v)]
         return float(np.median(v)) if v.size else float("nan")

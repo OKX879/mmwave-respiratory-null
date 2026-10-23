@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""从单个 zip 分卷中提取完整包含的文件（分卷 zip 无法用标准库直接解压）。"""
+"""从单个 zip 分卷中提取完整包含的文件（分卷 zip 无法用标准库直接解压）。
+Extract complete files from a single split-zip volume; the standard library cannot open split archives."""
 from __future__ import annotations
 
 import argparse

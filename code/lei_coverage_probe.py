@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 20 Hz 平台的覆盖率 Q —— 先做单记录探针。"""
+"""Lei 20 Hz 平台的覆盖率 Q —— 先做单记录探针。
+Coverage Q on the Lei 20 Hz platform, starting with a single-record probe."""
 from __future__ import annotations
 
 from pathlib import Path

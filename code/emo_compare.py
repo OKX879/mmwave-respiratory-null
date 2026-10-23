@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨数据集/跨域汇总：合成 · capsule · emo(vital) · emo(cumsum) 四方对照。"""
+"""跨数据集/跨域汇总：合成 · capsule · emo(vital) · emo(cumsum) 四方对照。
+Cross-dataset summary: synthetic, capsule, emo(vital) and emo(cumsum) side by side."""
 from __future__ import annotations
 
 import json

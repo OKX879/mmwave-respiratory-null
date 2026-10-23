@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""多径零点检验：在 Zhang 等 2024 的 Range-FFT 立方体上直接量复平面轨迹。"""
+"""多径零点检验：在 Zhang 等 2024 的 Range-FFT 立方体上直接量复平面轨迹。
+Null test: measure the complex trajectory directly on the Range-FFT cube of Zhang et al. 2024."""
 from __future__ import annotations
 
 import argparse
@@ -24,7 +25,8 @@ def load_cube(stem: str) -> np.ndarray:
 
 
 def kasa_fit(z: np.ndarray) -> tuple[float, float, float, float]:
-    """代数圆拟合（Kasa）。返回 (cx, cy, R, 残差比例)。"""
+    """代数圆拟合（Kasa）。返回 (cx, cy, R, 残差比例)。
+Algebraic circle fit (Kasa), returning centre, radius and residual ratio."""
     x, y = z.real, z.imag
     A = np.column_stack([2 * x, 2 * y, np.ones_like(x)])
     b = x ** 2 + y ** 2

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""A 组：网格外推 / θ0 推广 / 留出验证 / 稳健性扫描。"""
+"""A 组：网格外推 / θ0 推广 / 留出验证 / 稳健性扫描。
+Group A: grid extrapolation, theta0 generalization, held-out test and robustness sweep."""
 from __future__ import annotations
 
 import sys
@@ -29,7 +30,8 @@ RHO_LO, RHO_HI = 0.7391, 1.3529
 
 # --------------------------------------------------------------- 解析模型
 def depth_model(rho, th_max, th0=0.0):
-    """归一化深度 d = min|z|/max|z|，弧段 [θ0-θmax, θ0+θmax]。"""
+    """归一化深度 d = min|z|/max|z|，弧段 [θ0-θmax, θ0+θmax]。
+Normalized depth d = min|z|/max|z| over the arc [theta0-theta_max, theta0+theta_max]."""
     rho = np.asarray(rho, float)
     th_max = np.asarray(th_max, float)
     # 弧段到 π 的角距离
@@ -43,7 +45,8 @@ def depth_model(rho, th_max, th0=0.0):
 
 
 def coverage(th_max, th0=0.0):
-    """弧段 [θ0-θmax, θ0+θmax] 是否覆盖 π。"""
+    """弧段 [θ0-θmax, θ0+θmax] 是否覆盖 π。
+Whether the arc [theta0-theta_max, theta0+theta_max] covers pi."""
     lo, hi = th0 - th_max, th0 + th_max
     return (lo <= np.pi) & (np.pi <= hi)
 

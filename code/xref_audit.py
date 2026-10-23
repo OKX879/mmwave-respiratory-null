@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""交叉引用体检：label/ref 完整性、图表编号顺序、cite 与作者名匹配"""
+"""交叉引用体检：label/ref 完整性、图表编号顺序、cite 与作者名匹配
+Cross-reference audit: label and ref completeness, figure and table numbering order, citation-author matching."""
 import io, sys, re
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 

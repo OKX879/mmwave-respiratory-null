@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补充材料 S2 图：capsule 逐例明细（为什么必须报分布而不是中位数）。"""
+"""补充材料 S2 图：capsule 逐例明细（为什么必须报分布而不是中位数）。
+Supplementary figure S2: capsule case detail, showing why a distribution rather than a median is reported."""
 from __future__ import annotations
 
 from pathlib import Path

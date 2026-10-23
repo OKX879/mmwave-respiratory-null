@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""IEEE graphical abstract: workflow 660x295"""
+"""IEEE 图形摘要：三面板流程，660×295 像素。
+IEEE graphical abstract: a three-panel workflow at 660x295 px."""
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

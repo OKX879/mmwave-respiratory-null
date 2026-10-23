@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""真实数据回放：从 capsule（RS6240，8 通道，ECG 金标）捕获生产链的位移信号。"""
+"""真实数据回放：从 capsule（RS6240，8 通道，ECG 金标）捕获生产链的位移信号。
+Real-data replay: capture the production displacement signal from the capsule (RS6240, 8 channels, ECG gold)."""
 
 from __future__ import annotations
 

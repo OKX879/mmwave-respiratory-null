@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Parralejo 前端 v2：用距离像选格（而非心搏带功率），并校验 ECG 金标。"""
+"""Parralejo 前端 v2：用距离像选格（而非心搏带功率），并校验 ECG 金标。
+Parralejo front end v2: select the bin from the range profile rather than beat-band power, and validate the ECG gold standard."""
 from __future__ import annotations
 
 import numpy as np
@@ -14,7 +15,8 @@ TESTS = [('Sitting', 'Rest'), ('Sitting', 'Post-exercise'),
 
 
 def ecg_hr_robust(d):
-    """ECG 金标：8–30 Hz 带通 → 平方增强 → 峰检 → RR 稳健中位 + 质量标记。"""
+    """ECG 金标：8–30 Hz 带通 → 平方增强 → 峰检 → RR 稳健中位 + 质量标记。
+ECG gold standard: 8-30 Hz bandpass, squaring, peak detection, robust median RR and a quality flag."""
     ecg = pd.read_csv(d / 'movesense_ecg.csv')
     t = pd.to_datetime(ecg.Timestamp).values.astype('datetime64[ms]').astype(np.int64) / 1000.0
     fs = 1.0 / np.median(np.diff(t))

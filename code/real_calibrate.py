@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""真实数据上的准则校准 + 闭环：合成结论能否迁移？"""
+"""真实数据上的准则校准 + 闭环：合成结论能否迁移？
+Criterion calibration and closed loop on real data: do the synthetic conclusions transfer?"""
 
 from __future__ import annotations
 
@@ -39,7 +40,8 @@ def load_real(path: Path, main_boundary_only: bool = True) -> pd.DataFrame:
 
 
 def rho_table(df: pd.DataFrame, scope: str) -> pd.DataFrame:
-    """候选级 ρ(准则, HR_MAE)：scope='all' 或 'thr:xxx'。"""
+    """候选级 ρ(准则, HR_MAE)：scope='all' 或 'thr:xxx'。
+Candidate-level rho between a criterion and HR_MAE, for scope all or a threshold slice."""
     sub = df if scope == "all" else df[df["threshold"] == scope[4:]]
     agg = sub.groupby("candidate_id").median(numeric_only=True)
     rows = []

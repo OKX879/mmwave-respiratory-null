@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""迁移对比图：合成 vs 真实（capsule）四联图。"""
+"""迁移对比图：合成 vs 真实（capsule）四联图。
+Transfer figure: synthetic versus real capsule data in four panels."""
 from __future__ import annotations
 
 import json

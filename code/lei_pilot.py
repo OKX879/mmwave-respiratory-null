@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 2024 双人数据试点：同一位置、三种带宽，检验零点几何/相位与 D 的区分度。"""
+"""Lei 2024 双人数据试点：同一位置、三种带宽，检验零点几何/相位与 D 的区分度。
+Lei 2024 dual-subject pilot: one position, three bandwidths; null geometry, phase and the discriminability of D."""
 from __future__ import annotations
 
 import json

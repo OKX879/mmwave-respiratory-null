@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""E 组：四个合成实验，回答"模型是不是唯一解释"这一类质疑。"""
+"""E 组：四个合成实验，回答"模型是不是唯一解释"这一类质疑。
+Group E: four synthetic experiments answering whether the model is the only explanation."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -18,7 +19,8 @@ R_TH = 0.3                      # 论文 D 的阈值
 
 # --------------------------------------------------------------- 公共
 def detector(env):
-    """论文的深凹陷检测器，返回 (事件数, 凹陷比例 D)。"""
+    """论文的深凹陷检测器，返回 (事件数, 凹陷比例 D)。
+The paper's deep-dip detector, returning the event count and the dip ratio D."""
     med = float(np.median(env))
     if med <= 0 or not np.isfinite(med):
         return 0, 0.0
@@ -28,7 +30,8 @@ def detector(env):
 
 
 def synth(statics, motions, snr_db=30.0, rng=None):
-    """statics: [(amp, phase)]；motions: [(amp, theta_max, f, chi)]。"""
+    """statics 为 [(幅度, 相位)]；motions 为 [(幅度, theta_max, f, chi)]。
+statics is a list of (amp, phase); motions a list of (amp, theta_max, f, chi)."""
     rng = rng or np.random.default_rng(0)
     t = np.arange(N_FRAMES) / FS
     z = np.zeros(N_FRAMES, complex)
@@ -44,7 +47,8 @@ def synth(statics, motions, snr_db=30.0, rng=None):
 
 
 def rho_eff(statics, motions):
-    """|静止相量和| 与 RMS|运动相量和| 的比值。"""
+    """|静止相量和| 与 RMS|运动相量和| 的比值。
+Ratio of |sum of static phasors| to RMS |sum of motion phasors|."""
     s = abs(sum(a * np.exp(1j * ph) for a, ph in statics))
     m2 = sum(a ** 2 for a, *_ in motions)
     return float(np.sqrt(m2) / (s + 1e-15))
@@ -64,7 +68,8 @@ CONFIGS = {
 
 
 def build_case(n_static, n_motion, fmode, target_ratio, rng):
-    """按目标 ρ_eff 造一条记录。静态可有 1 或 2 个，相位随机。"""
+    """按目标 ρ_eff 造一条记录。静态可有 1 或 2 个，相位随机。
+Build one record at a target rho_eff, with one or two static phasors and random phases."""
     statics = [(1.0, rng.uniform(-np.pi, np.pi))]
     if n_static == 2:
         statics.append((rng.uniform(0.4, 1.0), rng.uniform(-np.pi, np.pi)))

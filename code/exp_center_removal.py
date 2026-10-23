@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""E1：减圆心（DC offset / null point 修正）对比实验。"""
+"""E1：减圆心（DC offset / null point 修正）对比实验。
+E1: comparison of static-centre removal, i.e. DC offset or null-point correction."""
 from __future__ import annotations
 
 import argparse
@@ -76,7 +77,8 @@ def circle_windowed(z: np.ndarray, w: float = 10.0, hop: float = 5.0) -> np.ndar
 
 # --------------------------------------------------------------- 指标
 def dip_stats(sig: np.ndarray, ref_scale: float | None = None) -> tuple[float, int]:
-    """(凹陷帧占比, 深凹陷事件数)。"""
+    """(凹陷帧占比, 深凹陷事件数)。
+Returns the fraction of dip frames and the number of deep-dip events."""
     env = np.abs(sig)
     med = float(np.median(env))
     ref = med if ref_scale is None else float(ref_scale)
@@ -90,7 +92,8 @@ def dip_stats(sig: np.ndarray, ref_scale: float | None = None) -> tuple[float, i
 
 
 def q05(sig: np.ndarray) -> float:
-    """归一化包络的 5% 分位：1.0 = 完全不塌陷（纯圆周），0 = 完全塌陷。"""
+    """归一化包络的 5% 分位：1.0 = 完全不塌陷（纯圆周），0 = 完全塌陷。
+5th percentile of the normalized envelope: 1.0 means no collapse, 0 means full collapse."""
     env = np.abs(sig)
     med = float(np.median(env))
     return float(np.percentile(env, 5) / med) if med > 0 else float('nan')

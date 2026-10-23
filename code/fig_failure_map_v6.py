@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Fig. failure map, v6: swing axis extended to the measured range."""
+"""失效映射图 v6：摆动轴扩展到实测范围。
+Failure map, v6: the swing axis extended to the measured range."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -32,13 +33,15 @@ RED = "#E45756"
 
 
 def r_of(rho, th):
-    """Normalized depth min|z|/max|z| for an arc of half-swing th centered at 0."""
+    """半摆幅 th、以 0 为中心的弧段的归一化深度 min|z|/max|z|。
+Normalized depth min|z|/max|z| for an arc of half-swing th centred at zero."""
     th_deep = np.where(th >= np.pi, np.pi, th)
     return np.sqrt(1 + rho ** 2 + 2 * rho * np.cos(th_deep)) / (1 + rho)
 
 
 def panel_a(ax):
-    """Failure set d<=0.15 in the (rho, theta_max) plane."""
+    """(rho, theta_max) 平面上的失效集 d<=0.15。
+Failure set d <= 0.15 in the (rho, theta_max) plane."""
     rho = np.linspace(0.10, 2.50, 500)
     thm = np.linspace(0.0, 28.0, 500)
     R, T = np.meshgrid(rho, thm)

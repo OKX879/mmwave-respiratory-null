@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""快速 pilot：真实信号上检验【层数结构性安全边界 L ≤ 4】是否成立。"""
+"""快速 pilot：真实信号上检验【层数结构性安全边界 L ≤ 4】是否成立。
+Quick pilot: does the structural level bound L <= 4 hold on real signals?"""
 
 from __future__ import annotations
 

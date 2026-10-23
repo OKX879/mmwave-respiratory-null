@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""对齐度门槛：只把“几何零点”纳入相位锁定统计。"""
+"""对齐度门槛：只把“几何零点”纳入相位锁定统计。
+Alignment gate: admit only geometric nulls into the phase-locking statistics."""
 from __future__ import annotations
 
 import json

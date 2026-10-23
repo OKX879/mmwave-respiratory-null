@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""用同步 ECG/PCG 验证 Lei 数据选中 bin 的生理性。"""
+"""用同步 ECG/PCG 验证 Lei 数据选中 bin 的生理性。
+Check the physiological plausibility of the selected Lei bin against synchronous ECG and PCG."""
 from __future__ import annotations
 
 from pathlib import Path

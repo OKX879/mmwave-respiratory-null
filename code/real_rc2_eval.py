@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""rc2（跨距离格心搏相干）在真实数据上的首次校准。"""
+"""rc2（跨距离格心搏相干）在真实数据上的首次校准。
+First calibration of rc2, the cross-range-bin beat coherence, on real data."""
 
 from __future__ import annotations
 
@@ -28,7 +29,8 @@ G = "hr_mae_bpm"
 
 # ---------------------------------------------------------------------------
 def load_cube(stem: str) -> np.ndarray:
-    """返回 (channels, angles, bins, frames) 的复数立方体。"""
+    """返回 (channels, angles, bins, frames) 的复数立方体。
+Return the complex cube with shape (channels, angles, bins, frames)."""
     with h5py.File(DATA / f"{stem}.mat", "r") as f:
         raw = f[f["data_all"][0, 0]][:]
     return (raw["real"] + 1j * raw["imag"]).astype(np.complex128)
@@ -36,7 +38,8 @@ def load_cube(stem: str) -> np.ndarray:
 
 def bin_displacement(z: np.ndarray, ch_axis_bin: int, angle: int,
                      t0: int, n: int) -> np.ndarray:
-    """单距离格的位移序列（与生产链同族但不等价的融合，见文件头）。"""
+    """单距离格的位移序列（与生产链同族但不等价的融合，见文件头）。
+Displacement series of one range bin, same family as the production chain but not equivalent; see the file header."""
     seg = z[:, angle, ch_axis_bin, :].copy()           # (ch, T)
     seg = seg - seg.mean(axis=1, keepdims=True)        # MTI：逐通道去静态
     wgt = np.abs(seg).mean(axis=1, keepdims=True)      # 幅度权重

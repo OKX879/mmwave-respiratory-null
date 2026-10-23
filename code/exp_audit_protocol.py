@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""口径审计：① 复现 Table II 的事件定义；② 用记录级口径重算；③ 复核距离轴。"""
+"""口径审计：① 复现 Table II 的事件定义；② 用记录级口径重算；③ 复核距离轴。
+Protocol audit: reproduce the Table II event definition, recompute at record level, recheck the range axis."""
 from __future__ import annotations
 
 import itertools
@@ -26,7 +27,8 @@ R_LO, R_HI = 0.30, 2.00
 
 
 def n_deep_variant(seg: np.ndarray, depth: float, prom: float, gap: float) -> int:
-    """按参数化的事件定义数深凹陷个数（对应论文 §V）。"""
+    """按参数化的事件定义数深凹陷个数（对应论文 §V）。
+Count deep dips under the parameterised event definition of paper section V."""
     env = np.abs(seg)
     med = float(np.median(env))
     if med <= 0:
@@ -36,7 +38,8 @@ def n_deep_variant(seg: np.ndarray, depth: float, prom: float, gap: float) -> in
 
 
 def resp_coherence(z: np.ndarray) -> float:
-    """相位谱在 0.1–0.6 Hz 的能量占比：受试者所在 bin 高，静物 bin 低。"""
+    """相位谱在 0.1–0.6 Hz 的能量占比：受试者所在 bin 高，静物 bin 低。
+Share of phase-spectrum energy in 0.1-0.6 Hz: high in the subject's bin, low in a static bin."""
     ph = np.unwrap(np.angle(z))
     f, P = welch(ph - ph.mean(), fs=FS, nperseg=int(min(len(ph), 512)))
     tot = float(P[(f > 0.05) & (f < 2.0)].sum())

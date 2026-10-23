@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""候选矩阵批量评估：对每个（方法, 带, 层）组合算指标，写 manifest.csv 与 matrix_config.json。"""
+"""候选矩阵批量评估：对每个（方法, 带, 层）组合算指标，写 manifest.csv 与 matrix_config.json。
+Batch evaluation of the candidate matrix: metrics for every (method, band, level) combination, written to manifest.csv and matrix_config.json."""
 from __future__ import annotations
 
 import argparse
@@ -29,7 +30,8 @@ from criteria_lib import (
 # DWT 频带归属
 # ---------------------------------------------------------------------------
 def level_bands(level: int, fs: float) -> dict[str, tuple[float, float]]:
-    """给出各层频带：d1..dL 为细节带（由高到低），aL 为近似带。"""
+    """给出各层频带：d1..dL 为细节带（由高到低），aL 为近似带。
+Band edges per level: d1 to dL are detail bands from high to low, aL is the approximation band."""
     nyq = fs / 2.0
     out: dict[str, tuple[float, float]] = {}
     for j in range(1, level + 1):
@@ -43,7 +45,8 @@ def _overlap(a: tuple[float, float], b: tuple[float, float]) -> float:
 
 
 def assign_component(band: tuple[float, float]) -> str:
-    """把某一层的频带划给 呼吸 / 心搏 / 丢弃（"层归属"模式用）。"""
+    """把某一层的频带划给 呼吸 / 心搏 / 丢弃（"层归属"模式用）。
+Assign one level's band to respiration, beat or discard, used by the level-assignment mode."""
     lo, hi = band
     if hi <= DISPLAY_BAND[0]:
         return "resp"
@@ -73,7 +76,8 @@ def _thr_universal(c: np.ndarray) -> float:
 
 
 def _thr_sure(c: np.ndarray) -> float:
-    """Stein 无偏风险估计阈值（标准实现）。"""
+    """Stein 无偏风险估计阈值（标准实现）。
+Stein's unbiased risk estimate threshold, standard implementation."""
     c = np.asarray(c, dtype=float)
     n = c.size
     if n < 4:
@@ -104,7 +108,8 @@ _THR_FUNCS = {
 
 
 def apply_threshold(coeffs: list[np.ndarray], rule: str) -> list[np.ndarray]:
-    """对细节系数逐层做阈值（近似系数 aL 不处理）。rule='none' 时原样返回。"""
+    """对细节系数逐层做阈值（近似系数 aL 不处理）。rule='none' 时原样返回。
+Threshold detail coefficients level by level, leaving aL untouched; rule='none' returns them unchanged."""
     if rule == "none":
         return [np.array(c, dtype=float) for c in coeffs]
     fn, mode = _THR_FUNCS[rule]           # coeffs[0]=aL, 其余为 dL..d1
@@ -132,7 +137,8 @@ def decompose_dwt(
     separation: str = "bandpass",
     need_full: bool = True,
 ) -> Optional[dict]:
-    """DWT 分解 →（呼吸, 心搏, 全重构, 系数, 各层心搏重构）。"""
+    """DWT 分解 →（呼吸, 心搏, 全重构, 系数, 各层心搏重构）。
+DWT decomposition returning respiration, beat, full reconstruction, coefficients and per-level beat reconstructions."""
     x = np.asarray(x, dtype=float)
     n = len(x)
     try:
@@ -205,7 +211,8 @@ def cwt_scales(wavelet: str, fs: float, band: tuple[float, float], n_scales: int
 
 
 def _icwt_like(coeffs: np.ndarray, scales: np.ndarray) -> np.ndarray:
-    """Torrence & Compo 式尺度求和重构（自实现，替代已移除的 pywt.icwt）。"""
+    """Torrence & Compo 式尺度求和重构（自实现，替代已移除的 pywt.icwt）。
+Torrence and Compo scale-sum reconstruction, reimplemented because pywt.icwt was removed."""
     s = np.asarray(scales, dtype=float)
     dj = float(np.log2(s[-1] / s[0]) / (len(s) - 1)) if len(s) > 1 else 1.0
     return np.real(np.sum(np.asarray(coeffs) / np.sqrt(s)[:, None], axis=0)) * dj
@@ -248,7 +255,8 @@ def decompose_cwt(
 def gt_metrics(card_est: np.ndarray, resp_est: np.ndarray, *,
                card_gt: np.ndarray, resp_gt: np.ndarray,
                hr_gt_bpm: float, rr_gt_bpm: float, fs: float) -> dict:
-    """合成数据上的"真实指标"（有干净源 → 可算）。"""
+    """合成数据上的"真实指标"（有干净源 → 可算）。
+Ground-truth metrics on synthetic data, available because the clean source is known."""
     # 心率误差：在展示带上估心率（见文件头口径说明）
     hr_est = estimate_hr_psd(card_est, fs, band=DISPLAY_BAND)
     hr_err = abs(hr_est - hr_gt_bpm) if np.isfinite(hr_est) else float("nan")
@@ -304,7 +312,8 @@ _WORKER_CTX: dict = {}
 
 
 def _init_worker(ctx: dict) -> None:
-    """multiprocessing 初始化：把上下文（已切片的信号）注入每个工作进程。"""
+    """multiprocessing 初始化：把上下文（已切片的信号）注入每个工作进程。
+multiprocessing initializer that injects the sliced signals into each worker."""
     _WORKER_CTX.clear()
     _WORKER_CTX.update(ctx)
 
@@ -314,7 +323,8 @@ def _worker(cand: dict):
 
 
 def eval_one_candidate(cand: dict, ctx: dict):
-    """算一个候选在全部（已选）样本上的结果 → (聚合行, 逐样本行, 失败数)。"""
+    """算一个候选在全部（已选）样本上的结果 → (聚合行, 逐样本行, 失败数)。
+Evaluate one candidate on all selected samples, returning the aggregate row, per-sample rows and failure count."""
     mix = ctx["mix"]                # (n_samples, C, T) 已按 sample_idx 切片
     mix_raw = ctx["mix_raw"]        # 同上；未开 RHC 时与 mix 相同
     card_gt = ctx["card_gt"]

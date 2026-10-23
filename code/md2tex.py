@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""把 论文_小波基选择_v0.1.md 转成 IEEEtran 双栏 LaTeX（XeLaTeX + xeCJK）。"""
+"""把 论文_小波基选择_v0.1.md 转成 IEEEtran 双栏 LaTeX（XeLaTeX + xeCJK）。
+Convert the wavelet-selection paper from Markdown to two-column IEEEtran LaTeX with XeLaTeX and xeCJK."""
 from __future__ import annotations
 
 import re
@@ -17,12 +18,14 @@ SPECIAL = {
 
 
 def esc(t: str) -> str:
-    """纯文本转义（不碰 $...$ 与已生成的命令）。"""
+    """纯文本转义（不碰 $...$ 与已生成的命令）。
+Escape plain text without touching math or generated commands."""
     return "".join(SPECIAL.get(c, c) for c in t)
 
 
 def inline(t: str) -> str:
-    """行内：先保护 math/code/引用，再转义，再还原并加格式。"""
+    """行内：先保护 math/code/引用，再转义，再还原并加格式。
+Inline pass: protect math, code and citations, escape, then restore and apply formatting."""
     store: list[str] = []
 
     def keep(m: re.Match) -> str:
@@ -65,7 +68,8 @@ def inline(t: str) -> str:
 
 def parse_table(lines: list[str], caption: str = "") -> str:
     def split_row(ln: str) -> list[str]:
-        """按 | 切分，但先保护转义竖线 \\|（否则单元格会被切开）。"""
+        r"""按 | 切分，但先保护转义竖线 \|（否则单元格会被切开）。
+Split on the pipe character after protecting escaped pipes, which would otherwise cut cells apart."""
         s = ln.strip()
         if s.startswith("|"):
             s = s[1:]

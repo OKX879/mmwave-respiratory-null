@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""G 组：角度维是否真的携带可分信息？"""
+"""G 组：角度维是否真的携带可分信息？
+Group G: does the angular dimension actually carry separable information?"""
 from __future__ import annotations
 
 from pathlib import Path

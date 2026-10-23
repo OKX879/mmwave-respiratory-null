@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""D 的前瞻性检验：前 30 s 选格并算 D，后 30 s 数深凹陷。"""
+"""D 的前瞻性检验：前 30 s 选格并算 D，后 30 s 数深凹陷。
+Prospective test of D: select the bin and compute D on the first 30 s, count deep dips on the last 30 s."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -20,7 +21,8 @@ EXPECT = 1200 * 3 * 4 * 200 * 2 * 2
 
 
 def auc(x, y):
-    """rank-based AUC（y 为 0/1）."""
+    """rank-based AUC（y 为 0/1）.
+Rank-based AUC for binary labels."""
     x = np.asarray(x, float); y = np.asarray(y, int)
     pos, neg = x[y == 1], x[y == 0]
     if len(pos) == 0 or len(neg) == 0:

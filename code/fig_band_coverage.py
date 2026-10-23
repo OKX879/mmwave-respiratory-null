@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图（§4.3 频带覆盖示意）：为什么 L ≤ 4 是安全边界。"""
+"""图（§4.3 频带覆盖示意）：为什么 L ≤ 4 是安全边界。
+Figure for section 4.3: why L <= 4 is the safe boundary."""
 from __future__ import annotations
 
 import matplotlib

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Parralejo 110 人数据集的前端可行性探针（10 Hz、31.2 cm 距离格）。"""
+"""Parralejo 110 人数据集的前端可行性探针（10 Hz、31.2 cm 距离格）。
+Front-end feasibility probe on the Parralejo 110-subject dataset at 10 Hz with 31.2 cm range bins."""
 from __future__ import annotations
 
 import pickle
@@ -28,7 +29,8 @@ def load_record(subj: str, posture: str, test: str):
 
 
 def ecg_hr(d: Path):
-    """ECG 金标：5–25 Hz 带通 → 自相关定周期 → 峰值精修。"""
+    """ECG 金标：5–25 Hz 带通 → 自相关定周期 → 峰值精修。
+ECG gold standard: 5-25 Hz bandpass, autocorrelation for the period, then peak refinement."""
     ecg = pd.read_csv(d / 'movesense_ecg.csv')
     t = pd.to_datetime(ecg.Timestamp).values.astype('datetime64[ms]').astype(np.int64) / 1000.0
     fs = 1.0 / np.median(np.diff(t))
@@ -58,7 +60,8 @@ def bin_phase(cube, b):
 
 
 def detrend_phase(ph, fs, win=10.0):
-    """滑动中值去慢漂移（呼吸以外的大尺度），再减均值。"""
+    """滑动中值去慢漂移（呼吸以外的大尺度），再减均值。
+Remove slow drift beyond respiration with a sliding median, then subtract the mean."""
     n = int(win * fs)
     if n % 2 == 0:
         n += 1

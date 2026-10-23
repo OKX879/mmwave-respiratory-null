@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""稳健性验证 2：屏气对照按“被试”聚合，避免 440 段的伪重复。"""
+"""稳健性验证 2：屏气对照按“被试”聚合，避免 440 段的伪重复。
+Robustness check 2: aggregate breath-hold by subject to avoid pseudo-replication over 440 segments."""
 from __future__ import annotations
 
 import json

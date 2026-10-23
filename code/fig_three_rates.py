@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图 T8-C：三个采样率上的覆盖率 Q，与表 T8-B 的预测边界对照。"""
+"""图 T8-C：三个采样率上的覆盖率 Q，与表 T8-B 的预测边界对照。
+Figure T8-C: coverage Q at three sampling rates against the predicted boundary of Table T8-B."""
 from __future__ import annotations
 
 import matplotlib

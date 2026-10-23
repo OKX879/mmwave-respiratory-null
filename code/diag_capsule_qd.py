@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Q_D 在 20 条 capsule 记录上到底有没有触发？——逐 bin 复核 D 的取值。"""
+"""Q_D 在 20 条 capsule 记录上到底有没有触发？——逐 bin 复核 D 的取值。
+Does Q_D ever trigger on the 20 capsule records? A per-bin review of D."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -16,7 +17,8 @@ WIN = 2000
 
 
 def dip(z: np.ndarray) -> float:
-    """z: (frames, channels) → 通道凹陷占比的中位数（同 bin_scorer.dip_ratio）。"""
+    """z: (frames, channels) → 通道凹陷占比的中位数（同 bin_scorer.dip_ratio）。
+z of shape (frames, channels) -> median over channels of the dip ratio, same as bin_scorer.dip_ratio."""
     a = np.abs(z)
     vals = []
     for ci in range(a.shape[1]):

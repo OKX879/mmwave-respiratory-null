@@ -1,4 +1,5 @@
-"""校验 parralejo 数据集的量程与门索引，对照 radar_chirpConfig.json。"""
+"""校验 parralejo 数据集的量程与门索引，对照 radar_chirpConfig.json。
+Check the Parralejo dataset range and bin indexing against radar_chirpConfig.json."""
 import json
 import pickle
 import zlib

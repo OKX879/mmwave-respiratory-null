@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 20 Hz 平台的覆盖率 Q 全量扫描（第三个采样率点）。"""
+"""Lei 20 Hz 平台的覆盖率 Q 全量扫描（第三个采样率点）。
+Full coverage-Q sweep on the Lei 20 Hz platform, the third sampling-rate point."""
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""包络调制的呼吸带占比：解释"为什么常圆心压不平"。"""
+"""包络调制的呼吸带占比：解释"为什么常圆心压不平"。
+Respiration-band share of envelope modulation: why a fixed centre cannot flatten the collapse."""
 from __future__ import annotations
 
 from pathlib import Path

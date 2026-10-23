@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""用 emo 数据替代活体采集：D 分布 + 载频裁决所需的表观摆幅。"""
+"""用 emo 数据替代活体采集：D 分布 + 载频裁决所需的表观摆幅。
+Use emo data in place of live capture: the D distribution and the apparent swing needed for the carrier-frequency argument."""
 from __future__ import annotations
 
 import json

@@ -1,7 +1,6 @@
 # Respiratory-Phase Multipath Nulls in mmWave Cardiac Monitoring
 
-Code and results for the manuscript *"Respiratory-Phase Multipath Nulls in mmWave Cardiac
-Monitoring: Depth Bound, Saturation, and a Deployable Criterion"*, submitted to IEEE TMTT.
+Code and results for the manuscript of the same title, submitted to IEEE TMTT.
 
 A range bin sums a static phasor $A_s$ and a breathing phasor $A_c e^{j\theta}$. When
 $\rho = A_c/A_s \approx 1$ the circle passes through the origin, $|z| \to 0$, and phase-based
@@ -12,9 +11,9 @@ bandwidth is the design knob that sets how often it happens.
 
 | Path | Contents |
 |---|---|
-| `code/` | 80 Python scripts, flat |
+| `code/` | 80 Python scripts |
 | `figs/` | 9 figures, vector PDF and PNG |
-| `paper/` | Manuscript, supplementary material, graphical abstract |
+| `CODE_INDEX.md` | what each script does |
 
 ## Run
 
@@ -38,7 +37,7 @@ python code/null_phase_figure.py     # Fig. S3
 
 - Scripts import each other by bare module name (`from lei_pilot import load`), so `code/` is
   flat. Splitting it into subpackages breaks the imports.
-- Docstrings and comments are in Chinese. README, figure labels and the manuscript are English.
+- Docstrings carry a Chinese line and an English line.
 - Seeds use `zlib.crc32`, not `hash()`: `hash()` changes between processes and produced 15.3% on
   one run and 14.4% on the next from identical data.
 - Two intervals that look alike: $\lvert\rho-1\rvert/(1+\rho)=0.15 \Rightarrow \rho \in
@@ -70,10 +69,4 @@ scripts expect.
 
 ## Licence
 
-Code MIT (`LICENSE`), figures CC BY 4.0. The manuscript is not covered by either licence; see
-`paper/NOTICE.md`.
-
-## Status
-
-Submitted to IEEE TMTT, October 2026. The PDFs in `paper/` are the submitted version, not the
-version of record.
+Code MIT (`LICENSE`), figures CC BY 4.0.

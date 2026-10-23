@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 数据集全扫描：9 个位置 × 6 次重复 × 3 带宽。"""
+"""Lei 数据集全扫描：9 个位置 × 6 次重复 × 3 带宽。
+Full Lei sweep: 9 positions by 6 repeats by 3 bandwidths."""
 from __future__ import annotations
 
 import json

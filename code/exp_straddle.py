@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""E2：straddle / scalloping 混杂控制实验。"""
+"""E2：straddle / scalloping 混杂控制实验。
+E2: straddle and scalloping confounder control."""
 from __future__ import annotations
 
 import sys
@@ -26,7 +27,8 @@ NULL_RECORD = 5
 
 
 def metrics(z: np.ndarray) -> dict:
-    """一个复时间序列的零点侧指标。"""
+    """一个复时间序列的零点侧指标。
+Null-side metrics for one complex time series."""
     a = bp(z)
     c, r, _ = circle_geometric(z)
     D, n = dip_stats(z)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨数据集零点分析：capsule（20 例，100 Hz）+ Parralejo 110 人（440 段，10 Hz）。"""
+"""跨数据集零点分析：capsule（20 例，100 Hz）+ Parralejo 110 人（440 段，10 Hz）。
+Cross-dataset null analysis on the capsule set (20 cases, 100 Hz) and Parralejo (110 subjects, 440 segments, 10 Hz)."""
 from __future__ import annotations
 
 import json
@@ -75,7 +76,8 @@ def peak_freq(x, fs, lo, hi):
 
 
 def metrics(z, fs, bin_lo=0, bin_hi=None):
-    """z: (bin, T) 复数。返回该段的全部指标。"""
+    """z: (bin, T) 复数。返回该段的全部指标。
+z has shape (bin, T) and is complex; returns every metric for the segment."""
     zm = z[bin_lo:bin_hi]
     b = bin_lo + int(np.argmax(np.std(zm, axis=1)))
     zc = z[b]

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""emo_dataset 跨硬件测试（IWR6843 60 GHz，15 受试者 × 19 trial，PPG 金标）。"""
+"""emo_dataset 跨硬件测试（IWR6843 60 GHz，15 受试者 × 19 trial，PPG 金标）。
+emo_dataset cross-hardware test: IWR6843 at 60 GHz, 15 subjects x 19 trials, PPG gold standard."""
 
 from __future__ import annotations
 

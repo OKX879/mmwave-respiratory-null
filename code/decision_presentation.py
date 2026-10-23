@@ -1,45 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T7 决策与呈现：硬门槛 → Borda 秩聚合 → Pareto 前沿；产出表 A / B / C 与四张图。
-
-为什么必须"三段式"而不是线性加权
---------------------------------
-项目既有教训：规则堆叠会引入不可测的调参点，一条新规则可毁全链路。
-因此禁止给 14 个准则各配权重。本脚本严格按《实验计划》§7 三段式执行：
-
-  1) 硬门槛：先剔除「结构上必然不合格」与「物理上不合格」的候选。
-     阈值由生理/数学定，**不由数据拟合**。
-  2) 秩聚合：只对**通过校准的准则**做 Borda 计数（无需权重，抗单指标异常）。
-     **反预测器（rc1 / rc3 / sm5）必须先禁用**，否则会把基选反（§4 F6 / 口径 9）。
-  3) Pareto 前沿：作为结论呈现——"没有任何一个基在所有指标上最优"。
-
-本脚本遵守的硬约束（逐条对应 研究进展记录.md §7）
-----------------------------------------------
-- 口径 9 ：反预测器 rc1/rc3/sm5 禁用；名单依赖前端（本矩阵为 RHC **关闭**，故用 off 名单）。
-- 口径 16：K 折复检一律用**留出协议**（train 选 / test 评），不做"既选又评"。
-- 口径 17：秩聚合可能被"输出并列块"带偏 → 本脚本对输出**逐位相同**的候选做结构去重校验，
-           并明确其适用边界（小池成立 / 大池不复现）。
-- 口径 19：层数结构性安全边界 L ≤ 4（aL 上界 = nyq/2^L 须覆盖心搏带上界 3.0 Hz）→ 硬门槛。
-- 口径 20：因子优先级 η²：层数 ≫ 阈值 ≫ 基 > 边界；"基"的区分度只在 L=4 一格。
-- 口径 21：**报告名次必须给"值差（gap）"**，不能只给"秩"（T4 上有 870 个候选挤在
-           0.005 BPM 窗口内，秩无区分意义）。
-
-产出
-----
-<table_out>/
-  table_A_candidate_matrix.csv   候选矩阵总表（含门槛标记 / Borda 分 / Pareto 标记）
-  table_B_factors_config.csv     因子重要性 + 层数边界 + 决策结果
-  table_C_criteria_rho.csv       准则校准 ρ 表（soft / all / per-sample + 判定）
-  decision_summary.json          全部数字（供论文写作引用）
-  figs_T7/fig1_factor_effects.png
-  figs_T7/fig2_pareto_front.png
-  figs_T7/fig3_criteria_rho_heatmap.png
-  figs_T7/fig4_L4_wavelet_threshold_grid.png
-
-用法
-----
-    python decision_presentation.py --out-dir matrix_out_t4
-"""
+"""决策与呈现：硬门槛 → Borda 秩聚合 → Pareto 前沿；产出表 A / B / C 与四张图。
+Decision and presentation: hard gate -> Borda rank aggregation -> Pareto front; writes tables A/B/C and four figures."""
 
 from __future__ import annotations
 
@@ -103,7 +65,8 @@ def setup_font() -> str:
 # 基础统计
 # ---------------------------------------------------------------------------
 def eta_squared(y: np.ndarray, groups: np.ndarray) -> float:
-    """单因素 η² = SS_between / SS_total（方差解释比例）。"""
+    """单因素 η² = SS_between / SS_total（方差解释比例）。
+One-way eta squared = SS_between / SS_total, the share of variance explained."""
     y = np.asarray(y, dtype=float)
     g = np.asarray(groups)
     sst = float(((y - y.mean()) ** 2).sum())
@@ -117,7 +80,8 @@ def eta_squared(y: np.ndarray, groups: np.ndarray) -> float:
 
 
 def compute_factor_eta2(g: pd.DataFrame) -> dict:
-    """因子 η²（log1p(HR_MAE)），只统计未超最大层数的候选（避免退化配置污染）。"""
+    """因子 η²（log1p(HR_MAE)），只统计未超最大层数的候选（避免退化配置污染）。
+Factor eta squared on log1p(HR_MAE), counting only candidates below the level cap."""
     d = g[g["level_over_max"] == 0]
     y = np.log1p(d["hr_mae_bpm"].to_numpy(dtype=float))
     return {f: eta_squared(y, d[f].to_numpy()) for f in
@@ -125,8 +89,8 @@ def compute_factor_eta2(g: pd.DataFrame) -> dict:
 
 
 def borda_score(g: pd.DataFrame, keys: list[str]) -> np.ndarray:
-    """Borda 秩聚合（与 closedloop_criteria.borda 同口径）：
-    按准则方向把秩线性累加，越大越好；NaN 记为该准则最差。"""
+    """Borda 秩聚合（与 closedloop_criteria.borda 同口径）
+Borda rank aggregation, same convention as closedloop_criteria.borda: ranks by direction, NaN as worst."""
     from scipy.stats import rankdata
     d = {c.key: c.direction for c in CRITERIA}
     s = np.zeros(len(g))
@@ -142,7 +106,8 @@ def borda_score(g: pd.DataFrame, keys: list[str]) -> np.ndarray:
 
 
 def pareto_mask(g: pd.DataFrame, obj: list[tuple[str, str]]) -> np.ndarray:
-    """Pareto 前沿（非支配集）。obj = [(列名, 'min'|'max'), ...]"""
+    """Pareto 前沿（非支配集）。obj = [(列名, 'min'|'max'), ...]
+Pareto front, i.e. the non-dominated set; obj = [(column, min or max), ...]."""
     A = np.column_stack([
         g[c].to_numpy(dtype=float) * (1.0 if s == "min" else -1.0) for c, s in obj
     ])
@@ -179,7 +144,8 @@ def load_results(path: Path) -> pd.DataFrame:
 # 2) 硬门槛
 # ---------------------------------------------------------------------------
 def apply_hard_gates(df: pd.DataFrame, verbose: bool = True) -> tuple[pd.DataFrame, dict]:
-    """三段式第一段：剔除结构/物理上必然不合格的候选（阈值不由数据拟合）。"""
+    """三段式第一段：剔除结构/物理上必然不合格的候选（阈值不由数据拟合）。
+Stage one: drop candidates that are structurally or physically invalid; thresholds are not fitted to data."""
     h1 = (df["level"] <= LEVEL_MAX_SAFE) & (df["level_over_max"] == 0)
     h2 = df["pb3"] >= IBI_OK_MIN
     h3 = df["pb2"] < RHR_MAX
@@ -229,7 +195,8 @@ def apply_hard_gates(df: pd.DataFrame, verbose: bool = True) -> tuple[pd.DataFra
 # 3) 决策链：Borda + Pareto
 # ---------------------------------------------------------------------------
 def decide(g: pd.DataFrame, verbose: bool = True) -> tuple[pd.DataFrame, dict]:
-    """三段式第二、三段：对决策池做 Borda 秩聚合 → 选 top-1；再取 Pareto 前沿。"""
+    """三段式第二、三段：对决策池做 Borda 秩聚合 → 选 top-1；再取 Pareto 前沿。
+Stages two and three: Borda over the decision pool, take top-1, then the Pareto front."""
     pool = g[g["in_pool"]].copy()
     pool["borda"] = borda_score(pool, KEEP_CRITERIA)
     obj = [("hr_mae_bpm", "min"), ("sdr_db", "max"), ("complexity", "min")]
@@ -307,14 +274,15 @@ def decide(g: pd.DataFrame, verbose: bool = True) -> tuple[pd.DataFrame, dict]:
 # ---------------------------------------------------------------------------
 def kfold_recheck(g: pd.DataFrame, raw_path: Path, folds: int = 5,
                   verbose: bool = True) -> dict:
-    """决策流程 vs 裸 Borda：硬门槛是否修复了 top-1 跳坏候选（T4 的 F12 发现 2）。"""
+    """决策流程 vs 裸 Borda：硬门槛是否修复了 top-1 跳坏候选（T4 的 F12 发现 2）。
+Decision pipeline versus plain Borda: does the hard gate stop top-1 from jumping to a bad candidate?"""
     raw = pd.read_csv(raw_path)
     raw = raw.copy()
     raw["threshold"] = [parse_candidate(c)["threshold"] for c in raw["candidate_id"]]
 
     def _run(df, tag, per_fold_selection: bool):
         """per_fold_selection=True 复现 T4 口径（每折在 train 上重新筛准则）；
-        False = 直接用已校准的固定 KEEP 集。两者都遵守留出协议。"""
+per_fold_selection=True reproduces the T4 convention of re-screening criteria per fold; False uses the calibrated KEEP set. Both follow the held-out protocol."""
         ids = sorted(df["sample_id"].unique().tolist())
         K = folds
         fl = [ids[i::K] for i in range(K)]
@@ -383,7 +351,7 @@ def kfold_recheck(g: pd.DataFrame, raw_path: Path, folds: int = 5,
 # ---------------------------------------------------------------------------
 def build_table_A(g: pd.DataFrame, out_dir: Path, verbose: bool = True) -> pd.DataFrame:
     """表 A：候选矩阵总表（含门槛标记 / Borda 分 / Pareto 标记）。
-    注：beat F1 与 IBI RMSE(TP) 需逐拍金标，本合成矩阵不产出（T5 真实数据才有），故不伪造该两列。"""
+Table A: full candidate matrix with gate flags, Borda scores and Pareto flags. Beat F1 and IBI RMSE need beat-level gold, absent here, so they are not fabricated."""
     cols = ["candidate_id", "wavelet", "level", "threshold", "boundary", "dec_len", "complexity",
             "hr_mae_bpm", "rr_mae_bpm", "sdr_db", "corr_card",
             "pb1", "pb2", "pb3", "sm1", "sm2", "sm4", "rc1", "rc3", "sm5", "sm3",
@@ -408,7 +376,8 @@ def build_table_A(g: pd.DataFrame, out_dir: Path, verbose: bool = True) -> pd.Da
 
 def build_table_B(g: pd.DataFrame, eta: dict, decision: dict,
                   out_dir: Path, verbose: bool = True) -> pd.DataFrame:
-    """表 B：因子重要性 + 层数边界 + 决策结果（含最优配置）。"""
+    """表 B：因子重要性 + 层数边界 + 决策结果（含最优配置）。
+Table B: factor importance, level boundary and the decision result including the best configuration."""
     # 层数安全边界表：该层**全部候选**（含 none）的中位数 —— 与 F13 口径一致
     lv = []
     for L in sorted(g["level"].unique()):
@@ -466,7 +435,8 @@ def build_table_B(g: pd.DataFrame, eta: dict, decision: dict,
 
 def build_table_C(calib_csv: Path, out_dir: Path, verbose: bool = True,
                   calib_json: Path | None = None) -> pd.DataFrame:
-    """表 C：准则校准 ρ 表（soft / all / per-sample + 判定）。"""
+    """表 C：准则校准 ρ 表（soft / all / per-sample + 判定）。
+Table C: criterion calibration rho under soft, all and per-sample scopes, with the pass-fail verdict."""
     t = pd.read_csv(calib_csv)
     official = {}
     if calib_json is not None and Path(calib_json).exists():

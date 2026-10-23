@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""反推 Table II 的选 bin 协议。"""
+"""反推 Table II 的选 bin 协议。
+Reverse-engineer the Table II bin-selection protocol."""
 from __future__ import annotations
 
 from pathlib import Path

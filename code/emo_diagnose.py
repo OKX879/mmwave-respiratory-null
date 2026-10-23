@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""emo 侧诚实诊断：把"中位 3.65"拆开，回答三个问题。"""
+"""emo 侧诚实诊断：把"中位 3.65"拆开，回答三个问题。
+Honest diagnosis on the emo side: break the median 3.65 down and answer three questions."""
 
 from __future__ import annotations
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""生产链 RHC 前端的薄封装（T3）。"""
+"""生产链 RHC 前端的薄封装（T3）。
+Thin wrapper around the production RHC front end."""
 
 from __future__ import annotations
 
@@ -18,7 +19,8 @@ _MOD = None
 
 
 def _load_prod_module():
-    """按路径加载生产链 RHC 模块（只加载一次）。"""
+    """按路径加载生产链 RHC 模块（只加载一次）。
+Load the production RHC module by path, once."""
     if not PROD_RHC_PATH.exists():
         raise FileNotFoundError(f"找不到生产链 RHC 模块：{PROD_RHC_PATH}")
     spec = importlib.util.spec_from_file_location("prod_rhc", PROD_RHC_PATH)
@@ -29,7 +31,8 @@ def _load_prod_module():
 
 
 def make_rhc_frontend(fs: float):
-    """返回一个 RHC 前端函数 f(x) -> process 结果 dict。"""
+    """返回一个 RHC 前端函数 f(x) -> process 结果 dict。
+Return an RHC front-end function that maps a signal to the result dictionary."""
     global _MOD
     if _MOD is None:
         _MOD = _load_prod_module()
@@ -44,7 +47,8 @@ def make_rhc_frontend(fs: float):
 
 # ---------------------------------------------------------------------------
 def _selftest() -> int:
-    """自检：撞心率场景（RR=18BPM 的 4 次谐波 = HR=72BPM 的基频）。"""
+    """自检：撞心率场景（RR=18BPM 的 4 次谐波 = HR=72BPM 的基频）。
+Self-test on the heart-rate collision case: the 4th harmonic of RR=18 BPM equals the HR=72 BPM fundamental."""
     fs, dur = 100.0, 30.0
     n = int(dur * fs)
     t = np.arange(n) / fs

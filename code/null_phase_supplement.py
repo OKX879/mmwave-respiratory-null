@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补充材料小图：除正文代表例外，全部合格记录（深凹陷 >= 5 次）的轨迹 + 呼吸相位折叠。"""
+"""补充材料小图：除正文代表例外，全部合格记录（深凹陷 >= 5 次）的轨迹 + 呼吸相位折叠。
+Supplementary figure: trajectories and phase folding for every qualifying record with at least five deep dips."""
 from __future__ import annotations
 
 import sys

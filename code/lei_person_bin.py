@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""按数据集给出的真实距离约束选 bin，复核分辨率效应。"""
+"""按数据集给出的真实距离约束选 bin，复核分辨率效应。
+Select bins under the dataset's true range constraints and recheck the resolution effect."""
 from __future__ import annotations
 
 from pathlib import Path

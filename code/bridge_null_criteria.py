@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""桥接实验：小波准则库能否充当多径零点论文里的 bin 级判据？"""
+"""桥接实验：小波准则库能否充当多径零点论文里的 bin 级判据？
+Bridge experiment: can the wavelet criteria library serve as a bin-level criterion for the null paper?"""
 from __future__ import annotations
 
 import argparse
@@ -28,7 +29,8 @@ CRIT_COLS = ['pb1', 'pb2', 'pb3', 'pb4', 'pb5', 'sm2', 'sm4', 'sm5', 'rc3', 'rc4
 
 # ---------------------------------------------------------------------------
 def bin_metrics(zc: np.ndarray) -> tuple[float, int]:
-    """多径零点侧指标（定义与 lei_person_bin / 论文 v5 一致）。"""
+    """多径零点侧指标（定义与 lei_person_bin / 论文 v5 一致）。
+Null-side metrics (definitions identical to lei_person_bin and paper v5)."""
     env = np.abs(zc)
     med = float(np.median(env))
     D = float(np.mean(env < 0.3 * med))
@@ -38,7 +40,8 @@ def bin_metrics(zc: np.ndarray) -> tuple[float, int]:
 
 
 def band_ratio_fourier(x: np.ndarray, fs: float = FS, band: tuple = VITAL) -> float:
-    """Zhu 式：生理频带能量 / 非直流总能量（傅里叶域，不做任何分解）。"""
+    """Zhu 式：生理频带能量 / 非直流总能量（傅里叶域，不做任何分解）。
+Zhu-style: physiological-band power over non-DC power, in the Fourier domain, no decomposition."""
     nper = int(min(len(x), 512))
     f, P = welch(x, fs=fs, nperseg=nper)
     m_tot = (f >= 0.05) & (f <= fs / 2.0)
@@ -48,7 +51,8 @@ def band_ratio_fourier(x: np.ndarray, fs: float = FS, band: tuple = VITAL) -> fl
 
 
 def band_ratio_wavelet(coeffs, L: int, fs: float = FS, band: tuple = VITAL) -> tuple[float, float, float]:
-    """小波子带能量评分：与 band_ratio_fourier 同一频带，但在倍频程子带上算。"""
+    """小波子带能量评分：与 band_ratio_fourier 同一频带，但在倍频程子带上算。
+Wavelet subband energy score: same band as band_ratio_fourier, computed on octave subbands."""
     bands = [(0.0, fs / 2 ** (L + 1))] + [(fs / 2 ** (j + 1), fs / 2 ** j)
                                           for j in range(1, L + 1)]
     e = np.array([float(np.sum(np.asarray(c) ** 2)) for c in coeffs])
@@ -62,7 +66,8 @@ def band_ratio_wavelet(coeffs, L: int, fs: float = FS, band: tuple = VITAL) -> t
 
 
 def gold_hrs(base: Path, pos: int, tag: str, k: int) -> dict:
-    """两目标 ECG 心率（逐记录）。log 目录与雷达数据目录同级。"""
+    """两目标 ECG 心率（逐记录）。log 目录与雷达数据目录同级。
+Two-target ECG heart rate per record; the log directory sits beside the radar data directory."""
     log_root = base.parent / '2_Log_data'
     out = {}
     for tgt in ('Target1', 'Target2'):
@@ -151,7 +156,8 @@ def build_rows(only: set | None) -> pd.DataFrame:
 
 # ---------------------------------------------------------------------------
 def per_record_rho(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
-    """逐记录 Spearman，并给出「控制 |A_s|/R 后的偏相关」。"""
+    """逐记录 Spearman，并给出「控制 |A_s|/R 后的偏相关」。
+Per-record Spearman, plus the partial correlation controlling for |A_s|/R."""
     recs = []
     keys = ['layout', 'pos', 'bw_GHz', 'repeat']
     for key, g in df.groupby(keys):

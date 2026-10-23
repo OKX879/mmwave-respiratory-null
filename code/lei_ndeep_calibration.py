@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""n_deep 的校准：给出 R1 里"calibrated threshold"的具体数字。"""
+"""n_deep 的校准：给出 R1 里"calibrated threshold"的具体数字。
+Calibrate n_deep, giving the numbers behind the calibrated threshold in R1."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -21,7 +22,8 @@ EXPECT = 1200 * 3 * 4 * 200 * 2 * 2
 
 
 def auc(x, y) -> float:
-    """Mann-Whitney AUC，**并列值用平均秩**（避免 0 值被任意排序）。"""
+    """Mann-Whitney AUC，**并列值用平均秩**（避免 0 值被任意排序）。
+Mann-Whitney AUC with average ranks for ties, so zero values are not ordered arbitrarily."""
     x = np.asarray(x, float)
     y = np.asarray(y, int)
     pos, neg = x[y == 1], x[y == 0]
@@ -32,7 +34,8 @@ def auc(x, y) -> float:
 
 
 def auc_naive(x, y) -> float:
-    """`lei_D_prospective.py` 原来的写法（argsort 名次，**并列值按出现顺序**）。"""
+    """`lei_D_prospective.py` 原来的写法（argsort 名次，**并列值按出现顺序**）。
+The original formulation in lei_D_prospective.py: argsort ranks with ties broken by order of appearance."""
     x = np.asarray(x, float)
     y = np.asarray(y, int)
     pos, neg = x[y == 1], x[y == 0]

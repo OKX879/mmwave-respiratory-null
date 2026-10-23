@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""《多径零点》双面板代表图：复平面轨迹 + 呼吸相位折叠。"""
+"""《多径零点》双面板代表图：复平面轨迹 + 呼吸相位折叠。
+Two-panel representative figure: the complex-plane trajectory and the respiration-phase folding."""
 from __future__ import annotations
 
 import json

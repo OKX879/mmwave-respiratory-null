@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""C2: shape test -- geometric cancellation versus amplitude modulation."""
+"""C2：形状检验，区分几何相消与幅度调制。
+C2: shape test separating geometric cancellation from amplitude modulation."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -26,7 +27,8 @@ DELTA = 0.10          # s, half the inner offset of the shape estimator
 
 # --------------------------------------------------------------- 形状统计量
 def dip_shapes(z, pk):
-    """p exponent and phase step for each dip index in pk."""
+    """计算每个凹陷处的时间指数 p 与相位步进。
+The p exponent and the phase step at each dip index in pk."""
     env = np.abs(z)
     med = float(np.median(env))
     e = env / med
@@ -55,7 +57,8 @@ def dip_shapes(z, pk):
 
 
 def detector(z):
-    """The paper's event definition, verbatim."""
+    """论文的事件定义，原样复现。
+The paper's event definition, verbatim."""
     env = np.abs(z)
     med = float(np.median(env))
     pk, _ = find_peaks(-env, distance=int(0.25 * FS), prominence=PROM * np.std(env))
@@ -101,7 +104,8 @@ def real_dips():
 
 # --------------------------------------------------------------- 合成世界
 def synth_geometric(n_trials=60, snr_db=25.0, rng=None):
-    """Two-phasor world: |z| passes through / near the origin."""
+    """双相量世界：|z| 扫过或接近原点。
+Two-phasor world: |z| passes through or near the origin."""
     rng = rng or np.random.default_rng(0)
     t = np.arange(int(60 * FS)) / FS
     rows = []
@@ -122,7 +126,8 @@ def synth_geometric(n_trials=60, snr_db=25.0, rng=None):
 
 
 def synth_am(n_trials=60, snr_db=25.0, rng=None):
-    """Amplitude-modulated world: the motion phasor fades, the arc never reaches antiphase."""
+    """幅度调制世界：运动相量衰减，弧段永远到不了反相。
+Amplitude-modulated world: the motion phasor fades and the arc never reaches antiphase."""
     rng = rng or np.random.default_rng(1)
     t = np.arange(int(60 * FS)) / FS
     rows = []

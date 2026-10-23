@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""emo 数据集零点试点（P01，17 个 trial）。"""
+"""emo 数据集零点试点（P01，17 个 trial）。
+emo null pilot, P01, 17 trials."""
 from __future__ import annotations
 
 import json

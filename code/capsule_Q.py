@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""capsule（100 Hz）平台的覆盖率 Q —— 三点验证的最后一点。"""
+"""capsule（100 Hz）平台的覆盖率 Q —— 三点验证的最后一点。
+Coverage Q on the capsule platform (100 Hz): the third of three validation points."""
 from __future__ import annotations
 
 from pathlib import Path

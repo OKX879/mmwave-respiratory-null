@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""§4.13(e) 图 T8-L：允许的分解层数随采样率的变化。"""
+"""§4.13(e) 图 T8-L：允许的分解层数随采样率的变化。
+Figure T8-L: the allowed decomposition level as a function of sampling rate."""
 from __future__ import annotations
 
 import matplotlib

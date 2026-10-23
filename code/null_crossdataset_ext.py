@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补充分析：漂移补偿相位 + ACC 运动控制。"""
+"""补充分析：漂移补偿相位 + ACC 运动控制。
+Supplementary analysis: drift-compensated phase with ACC motion control."""
 from __future__ import annotations
 
 import json
@@ -30,7 +31,8 @@ def slow_mean(z, fs, win_s=10.0):
 
 
 def phase_drift(z, fs, win_s=10.0):
-    """a(t) 相对 -A_s(t) 的夹角，折叠到 [0,1)。"""
+    """a(t) 相对 -A_s(t) 的夹角，折叠到 [0,1)。
+Angle of a(t) relative to -A_s(t), folded into [0,1)."""
     a = bp_complex(z, fs)
     As = slow_mean(z, fs, win_s)
     psi = np.unwrap(np.angle(a)) - (np.unwrap(np.angle(As)) + np.pi)
@@ -50,7 +52,8 @@ def core(z, fs, bin_lo=0, bin_hi=None):
 
 
 def acc_stats(path, fs_radar, i0, i1, n):
-    """返回 (窗内去重力 std, 窗外 std)；ACC 与雷达按各自时间轴对齐。"""
+    """返回 (窗内去重力 std, 窗外 std)；ACC 与雷达按各自时间轴对齐。
+Returns the gravity-removed sd inside and outside the window, with ACC and radar on their own time axes."""
     try:
         a = pd.read_csv(path)
     except Exception:

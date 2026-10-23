@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""无参考准则校准：读 matrix_out/matrix_raw.csv，输出 criteria_calibration.json/csv 与阈值。"""
+"""无参考准则校准：读 matrix_out/matrix_raw.csv，输出 criteria_calibration.json/csv 与阈值。
+Reference-free criterion calibration: reads matrix_out/matrix_raw.csv, writes criteria_calibration.json/csv and thresholds."""
 from __future__ import annotations
 
 import argparse
@@ -28,12 +29,14 @@ _NAN = float("nan")
 
 # ---------------------------------------------------------------------------
 def expected_sign(crit_dir: str, gold_dir: str) -> int:
-    """准则方向与金标好方向相同 → rho 期望为正，否则为负。"""
+    """准则方向与金标好方向相同 → rho 期望为正，否则为负。
+Sign convention: rho is expected positive when a criterion points the same way as the gold standard."""
     return 1 if crit_dir == gold_dir else -1
 
 
 def safe_spearman(a: np.ndarray, b: np.ndarray) -> tuple[float, float, int]:
-    """过滤非有限值后算 Spearman；退化情况返回 (nan, nan, n)。"""
+    """过滤非有限值后算 Spearman；退化情况返回 (nan, nan, n)。
+Spearman after dropping non-finite values; returns (nan, nan, n) when degenerate."""
     a = np.asarray(a, dtype=float)
     b = np.asarray(b, dtype=float)
     m = np.isfinite(a) & np.isfinite(b)
@@ -50,7 +53,8 @@ def safe_spearman(a: np.ndarray, b: np.ndarray) -> tuple[float, float, int]:
 
 
 def parse_candidate(cid: str) -> dict:
-    """从候选 id 还原元数据（用于分 scope）。"""
+    """从候选 id 还原元数据（用于分 scope）。
+Recover metadata from candidate ids, used for scoping."""
     parts = cid.split("|")
     if parts[0] == "dwt":
         return {"kind": "dwt", "wavelet": parts[1], "level": parts[2].lstrip("L"),

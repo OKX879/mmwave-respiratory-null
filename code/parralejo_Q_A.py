@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补测 10 Hz 平台的"约定 A"（心搏取自近似带 aL）。"""
+"""补测 10 Hz 平台的"约定 A"（心搏取自近似带 aL）。
+Convention A on the 10 Hz platform, taking the beat from the approximation band aL."""
 from __future__ import annotations
 
 import numpy as np

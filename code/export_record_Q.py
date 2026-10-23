@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""导出 §4.13 的逐记录 Q 明细（376 行，一条记录一行）。"""
+"""导出 §4.13 的逐记录 Q 明细（376 行，一条记录一行）。
+Export the per-record Q detail of section 4.13: 376 rows, one per record."""
 from __future__ import annotations
 
 from pathlib import Path

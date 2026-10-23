@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""D 组：把 AUC 从"自证"里救出来，并给出延迟-性能折中。"""
+"""D 组：把 AUC 从"自证"里救出来，并给出延迟-性能折中。
+Group D: rescue AUC from self-validation and quantify the delay-performance trade-off."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -24,7 +25,8 @@ DEPTH, PROM = 0.35, 0.15                 # 与论文一致
 
 
 def dips_of(env):
-    """论文定义的深凹陷：0.35×中位、0.25 s 间隔、0.15σ 突出度。"""
+    """论文定义的深凹陷：0.35×中位、0.25 s 间隔、0.15σ 突出度。
+The paper's deep dip: 0.35x median, 0.25 s spacing, 0.15 sigma prominence."""
     med = float(np.median(env))
     pk, _ = find_peaks(-env, distance=int(0.25 * FS), prominence=PROM * np.std(env))
     pk = pk[env[pk] < DEPTH * med]

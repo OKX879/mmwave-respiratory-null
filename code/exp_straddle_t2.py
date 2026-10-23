@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""straddle 控制实验（V2 协议，与 Table II 同口径）。"""
+"""straddle 控制实验（V2 协议，与 Table II 同口径）。
+Straddle control under the V2 protocol, identical to Table II."""
 from __future__ import annotations
 
 from pathlib import Path

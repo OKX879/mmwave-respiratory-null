@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""emo（100 Hz）平台补测覆盖率 Q —— 给 100 Hz 那个点加样本。"""
+"""emo（100 Hz）平台补测覆盖率 Q —— 给 100 Hz 那个点加样本。
+Coverage Q on the emo platform (100 Hz), adding samples at the 100 Hz point."""
 from __future__ import annotations
 
 import numpy as np

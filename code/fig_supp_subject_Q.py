@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""§4.13 补充材料图：逐受试者 Q 分布，以及它与心率的依赖。"""
+"""§4.13 补充材料图：逐受试者 Q 分布，以及它与心率的依赖。
+Supplementary figure for section 4.13: per-subject Q distribution and its dependence on heart rate."""
 from __future__ import annotations
 
 import matplotlib

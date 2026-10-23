@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨采样率复核：DWT 层数的"边界"是频带覆盖规则，不是数字 4。"""
+"""跨采样率复核：DWT 层数的"边界"是频带覆盖规则，不是数字 4。
+Cross-rate recheck: the DWT level boundary is a band-coverage rule, not the number 4."""
 from __future__ import annotations
 
 import numpy as np
@@ -25,7 +26,8 @@ def level_bands(level, fs):
 
 
 def assign(band, rule='fixed07'):
-    """层归属。"""
+    """层归属。
+Assign levels to bands."""
     lo, hi = band
     if rule == 'overlap':
         return 'card' if (min(hi, CARD[1]) - max(lo, CARD[0])) > 0 else 'resp'
@@ -37,7 +39,8 @@ def assign(band, rule='fixed07'):
 
 
 def recon_approx(x, w, L, fs):
-    """约定 A 的忠实实现：只保留近似带 aL，细节全部置零，再重构。"""
+    """约定 A 的忠实实现：只保留近似带 aL，细节全部置零，再重构。
+Faithful convention A: keep only aL, zero every detail band, then reconstruct."""
     c = pywt.wavedec(x, w, level=L, mode='symmetric')
     coeffs = [c[0]] + [np.zeros_like(cc) for cc in c[1:]]
     xr = pywt.waverec(coeffs, w, mode='symmetric')
@@ -77,7 +80,8 @@ def cardiac_recon(x, w, L, fs, rule='fixed07'):
 
 
 def amp_at(x, f0, fs, half=0.12):
-    """f0±half Hz 内的峰值幅度（加 Hann 窗抑制泄漏）。"""
+    """f0±half Hz 内的峰值幅度（加 Hann 窗抑制泄漏）。
+Peak amplitude within f0 +- half Hz, using a Hann window to suppress leakage."""
     y = (x - np.mean(x)) * np.hanning(len(x))
     f = np.fft.rfftfreq(len(x), 1 / fs)
     P = np.abs(np.fft.rfft(y))

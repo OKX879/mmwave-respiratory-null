@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""C1: prospective (first half -> second half) check on an independent front end."""
+"""C1：在独立前端上做前瞻检验（前半段选格，后半段验证）。
+C1: prospective first-half to second-half check on an independent front end."""
 from __future__ import annotations
 
 from pathlib import Path

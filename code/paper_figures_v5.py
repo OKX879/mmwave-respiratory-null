@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""v5 新图：分辨率效应 + 同位置三带宽轨迹（位置 2，第 2 次重复）。"""
+"""v5 新图：分辨率效应 + 同位置三带宽轨迹（位置 2，第 2 次重复）。
+New figures for v5: the resolution effect and three-bandwidth trajectories at one position, position 2 repeat 2."""
 from __future__ import annotations
 
 from pathlib import Path

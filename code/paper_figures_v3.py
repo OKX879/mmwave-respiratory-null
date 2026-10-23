@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""论文 v3 的补充图：理论几何、失效域、r-D 桥、分条件屏气、对齐度、P02 反例、窗敏感性、载频。"""
+"""论文 v3 的补充图：理论几何、失效域、r-D 桥、分条件屏气、对齐度、P02 反例、窗敏感性、载频。
+Supplementary figures for paper v3: geometry, failure region, r-D bridge, conditional breath-hold, alignment, the P02 counter-example, window sensitivity and carrier frequency."""
 from __future__ import annotations
 
 from pathlib import Path

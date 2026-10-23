@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""把"层数边界"写成可查表：采样率 fs → 允许的 L 区间。"""
+"""把"层数边界"写成可查表：采样率 fs → 允许的 L 区间。
+Tabulate the level boundary: sampling rate fs to the allowed range of L."""
 from __future__ import annotations
 
 import math

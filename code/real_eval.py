@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""真实数据矩阵评估：在 capsule 的真实【宽带位移】上跑缩减候选池。"""
+"""真实数据矩阵评估：在 capsule 的真实【宽带位移】上跑缩减候选池。
+Real-data matrix evaluation on the capsule wideband displacement over a reduced candidate pool."""
 
 from __future__ import annotations
 
@@ -68,7 +69,8 @@ def max_level(w: str, n: int) -> int:
 def beat_f1(pred_ms: np.ndarray, gold_ms: np.ndarray, fs: float,
             tol_ms: float = 150.0, lag_max_ms: float = 400.0,
             lag_step_ms: float = 20.0) -> tuple[float, float, float, float]:
-    """简化逐拍 F1：全局滞后对齐（±400 ms，20 ms 步长）+ ±150 ms 容差配对。"""
+    """简化逐拍 F1：全局滞后对齐（±400 ms，20 ms 步长）+ ±150 ms 容差配对。
+Simplified beat F1: global lag alignment over +-400 ms in 20 ms steps, then pairing within 150 ms."""
     if len(pred_ms) < 3 or len(gold_ms) < 3:
         return float("nan"), float("nan"), float("nan"), float("nan")
     best = (float("nan"), float("nan"), float("nan"), float("nan"))
@@ -96,7 +98,8 @@ def beat_f1(pred_ms: np.ndarray, gold_ms: np.ndarray, fs: float,
 
 
 def detect_beats(x: np.ndarray, fs: float) -> np.ndarray:
-    """简化心搏检测：对心搏分量做自适应阈值峰检测，返回峰时刻（ms）。"""
+    """简化心搏检测：对心搏分量做自适应阈值峰检测，返回峰时刻（ms）。
+Simplified beat detection: adaptive threshold peak picking on the beat component, returning peak times in ms."""
     from scipy.signal import find_peaks
     from scipy.ndimage import maximum_filter1d
     x = np.asarray(x, dtype=float)

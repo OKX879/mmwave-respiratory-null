@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""逐搏零点检验：在 cardiac 带（0.8–2.5 Hz）内看复平面轨迹与幅度凹陷。"""
+"""逐搏零点检验：在 cardiac 带（0.8–2.5 Hz）内看复平面轨迹与幅度凹陷。
+Beat-level null test: complex-plane trajectory and amplitude dips in the cardiac band (0.8-2.5 Hz)."""
 from __future__ import annotations
 
 import argparse
@@ -30,7 +31,8 @@ def load(stem: str):
 
 
 def bp_complex(x: np.ndarray, band=CARD, order: int = 4) -> np.ndarray:
-    """复数带通：对实部/虚部分别做零相位滤波（线性算子，等价于复数滤波）。"""
+    """复数带通：对实部/虚部分别做零相位滤波（线性算子，等价于复数滤波）。
+Complex bandpass: zero-phase filtering of the real and imaginary parts separately, equivalent to complex filtering."""
     sos = butter(order, [band[0], band[1]], btype="bandpass", fs=FS, output="sos")
     return sosfiltfilt(sos, x.real) + 1j * sosfiltfilt(sos, x.imag)
 
@@ -45,7 +47,8 @@ def kasa(z: np.ndarray):
 
 
 def envelope_dips(env: np.ndarray, fs=FS, min_sep_s=0.25):
-    """幅度包络的局部极小（凹陷），返回索引与深度比。"""
+    """幅度包络的局部极小（凹陷），返回索引与深度比。
+Local minima of the amplitude envelope (dips), returning indices and depth ratios."""
     inv = -env
     pk, _ = find_peaks(inv, distance=int(min_sep_s * fs),
                        prominence=0.15 * np.std(env))
@@ -56,7 +59,8 @@ def envelope_dips(env: np.ndarray, fs=FS, min_sep_s=0.25):
 
 
 def rayleigh(phases: np.ndarray) -> tuple[float, float]:
-    """返回 (R̄, Rayleigh p)。phases 为 [0,1) 的循环相位。"""
+    """返回 (R̄, Rayleigh p)。phases 为 [0,1) 的循环相位。
+Returns (mean R, Rayleigh p) for circular phases on [0,1)."""
     n = len(phases)
     if n < 5:
         return float("nan"), float("nan")

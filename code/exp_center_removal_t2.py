@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""统一口径后的减圆心分析（与 Table II 完全同口径）。"""
+"""统一口径后的减圆心分析（与 Table II 完全同口径）。
+Centre-removal analysis under the unified protocol, identical to Table II."""
 from __future__ import annotations
 
 from pathlib import Path

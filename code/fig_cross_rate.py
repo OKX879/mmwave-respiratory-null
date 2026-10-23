@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨采样率复核图：Q(L) 与"固定 0.7 Hz 归属"在低心率下的失效。"""
+"""跨采样率复核图：Q(L) 与"固定 0.7 Hz 归属"在低心率下的失效。
+Cross-rate recheck: Q(L) and the failure of a fixed 0.7 Hz assignment at low heart rates."""
 from __future__ import annotations
 
 import matplotlib

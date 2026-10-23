@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 数据集：位置 1 的 6 次重复 × 3 带宽扫描。"""
+"""Lei 数据集：位置 1 的 6 次重复 × 3 带宽扫描。
+Lei dataset: position 1, six repeats by three bandwidths."""
 from __future__ import annotations
 
 import json

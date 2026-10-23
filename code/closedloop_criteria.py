@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""b 闭环验证：只用"通过校准的无参考准则"选基，能否选到金标最优？"""
+"""b 闭环验证：只用"通过校准的无参考准则"选基，能否选到金标最优？
+Closed-loop check b: selecting a basis only from calibrated reference-free criteria, does it recover the gold optimum?"""
 
 from __future__ import annotations
 
@@ -42,7 +43,8 @@ def scope_mask(df: pd.DataFrame, scope: str) -> pd.Series:
 
 
 def borda(cand: pd.DataFrame, keys: list[str]) -> np.ndarray:
-    """Borda 秩聚合：按准则方向把秩线性累加（越大越好）。NaN 记为该准则最差。"""
+    """Borda 秩聚合：按准则方向把秩线性累加（越大越好）。NaN 记为该准则最差。
+Borda rank aggregation: accumulate ranks by criterion direction, higher is better; NaN counts as worst."""
     s = np.zeros(len(cand))
     for k in keys:
         v = cand[k].to_numpy(dtype=float)
@@ -57,7 +59,8 @@ def borda(cand: pd.DataFrame, keys: list[str]) -> np.ndarray:
 
 def select_criteria(df: pd.DataFrame, sample_ids: list[int], scope: str,
                     rho_min: float, p_max: float) -> tuple[list[str], list[dict]]:
-    """在给定样本集上，用候选级 Spearman ρ（对 3 个金标）筛出通过的准则。"""
+    """在给定样本集上，用候选级 Spearman ρ（对 3 个金标）筛出通过的准则。
+Screen criteria on a sample set by candidate-level Spearman rho against the three gold standards."""
     sub = df[df["sample_id"].isin(sample_ids) & scope_mask(df, scope)]
     agg = sub.groupby("candidate_id").median(numeric_only=True)
     keys = [c.key for c in CRITERIA if c.direction != "n/a" and not c.report_only]
@@ -79,7 +82,8 @@ def select_criteria(df: pd.DataFrame, sample_ids: list[int], scope: str,
 # ---------------------------------------------------------------------------
 def level_a_global(df: pd.DataFrame, sample_ids: list[int], scope: str,
                    keys: list[str]) -> dict:
-    """全局选基：候选级 Borda → 第一名 vs 金标最优。"""
+    """全局选基：候选级 Borda → 第一名 vs 金标最优。
+Global basis selection: candidate-level Borda, then compare the winner against the gold optimum."""
     sub = df[df["sample_id"].isin(sample_ids) & scope_mask(df, scope)]
     agg = sub.groupby("candidate_id").median(numeric_only=True)
     agg["meta"] = [parse_candidate(c) for c in agg.index]
@@ -104,7 +108,8 @@ def level_a_global(df: pd.DataFrame, sample_ids: list[int], scope: str,
 
 def level_b_persample(df: pd.DataFrame, sample_ids: list[int], scope: str,
                       keys: list[str], global_best_id: str, fixed_id: str) -> dict:
-    """逐样本选基：每样本内 Borda → top1；与 oracle / 全局最优 / 全体中位 / 最差比。"""
+    """逐样本选基：每样本内 Borda → top1；与 oracle / 全局最优 / 全体中位 / 最差比。
+Per-sample selection: Borda within each sample, compared with oracle, global best, median and worst."""
     sub = df[df["sample_id"].isin(sample_ids) & scope_mask(df, scope)]
     rows = []
     for sid, g in sub.groupby("sample_id"):
@@ -149,7 +154,8 @@ def level_b_persample(df: pd.DataFrame, sample_ids: list[int], scope: str,
 
 # ---------------------------------------------------------------------------
 def creds_agg(df: pd.DataFrame, ids: list[int], scope: str, keys: list[str]) -> pd.DataFrame:
-    """在给定样本集上算候选级（跨样本中位数）指标 + Borda 分。"""
+    """在给定样本集上算候选级（跨样本中位数）指标 + Borda 分。
+Candidate-level metrics (median across samples) plus the Borda score on a given sample set."""
     sub = df[df["sample_id"].isin(ids) & scope_mask(df, scope)]
     if sub.empty:
         return pd.DataFrame()
@@ -161,7 +167,8 @@ def creds_agg(df: pd.DataFrame, ids: list[int], scope: str, keys: list[str]) -> 
 
 def level_a_holdout(df: pd.DataFrame, train_ids: list[int], test_ids: list[int],
                     scope: str, keys: list[str]) -> dict:
-    """留出协议下的全局选基：**在 train 上按准则选，在 test 上评**（无信息泄漏）。"""
+    """留出协议下的全局选基：**在 train 上按准则选，在 test 上评**（无信息泄漏）。
+Held-out global selection: select on train, evaluate on test, so no information leaks."""
     tr = creds_agg(df, train_ids, scope, keys)
     te = creds_agg(df, test_ids, scope, keys)
     nan = float("nan")
@@ -197,7 +204,8 @@ def level_a_holdout(df: pd.DataFrame, train_ids: list[int], test_ids: list[int],
 
 
 def run_kfold(df: pd.DataFrame, args, out_dir: Path) -> int:
-    """K 折重复闭环：每折在 K-1 折上筛准则、在留出折上评闭环，报告均值±标准差。"""
+    """K 折重复闭环：每折在 K-1 折上筛准则、在留出折上评闭环，报告均值±标准差。
+Repeated K-fold loop: screen criteria on K-1 folds, evaluate on the held-out fold; report mean and sd."""
     all_ids = sorted(df["sample_id"].unique().tolist())
     K = args.folds
     # 交错分折：按索引取模，保证每折都覆盖 (SNR,HR,RR) 网格（数据集按块排列）

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""合成雷达位移域生命体征数据集生成器。"""
+"""合成雷达位移域生命体征数据集生成器。
+Generator for a synthetic radar displacement-domain vital-sign dataset."""
 
 from __future__ import annotations
 
@@ -26,7 +27,8 @@ SNR_REF_BAND = CARD_HR_BAND
 # 工具函数
 # ---------------------------------------------------------------------------
 def bandpower(x: np.ndarray, fs: float, band: tuple[float, float]) -> float:
-    """零相位带通后的平均功率。"""
+    """零相位带通后的平均功率。
+Mean power after a zero-phase bandpass."""
     sos = signal.butter(4, [band[0], band[1]], btype="bandpass", fs=fs, output="sos")
     y = signal.sosfiltfilt(sos, np.asarray(x, dtype=float))
     return float(np.mean(y ** 2))
@@ -34,7 +36,8 @@ def bandpower(x: np.ndarray, fs: float, band: tuple[float, float]) -> float:
 
 @lru_cache(maxsize=8)
 def noise_band_factor(fs: float, band: tuple[float, float]) -> float:
-    """单位方差白噪声经 bandpower() 实测的【带内增益因子】。"""
+    """单位方差白噪声经 bandpower() 实测的【带内增益因子】。
+Measured in-band gain of unit-variance white noise through bandpower()."""
     rng = np.random.default_rng(0)
     w = rng.normal(0.0, 1.0, 1 << 18)
     return bandpower(w, fs, band)
@@ -43,7 +46,8 @@ def noise_band_factor(fs: float, band: tuple[float, float]) -> float:
 def noise_sigma_for_cardiac_snr(
     card_clean: np.ndarray, fs: float, snr_db: float, band: tuple[float, float] = SNR_REF_BAND
 ) -> tuple[float, float]:
-    """求白噪声 sigma，使【实测带内噪声功率】= 心搏带内功率 / 10^(SNR/10)。"""
+    """求白噪声 sigma，使【实测带内噪声功率】= 心搏带内功率 / 10^(SNR/10)。
+Solve the white-noise sigma that sets measured in-band noise power to beat-band power over 10^(SNR/10)."""
     p_card = bandpower(card_clean, fs, band)
     p_noise_target = p_card / (10.0 ** (snr_db / 10.0))
     factor = noise_band_factor(fs, band)
@@ -58,7 +62,8 @@ def make_respiration(
     t: np.ndarray, f_resp: float, a_resp: float, rng: np.random.Generator,
     n_harm: int = 6, decay: float = 3.0,
 ) -> np.ndarray:
-    """呼吸：基频 + 多次谐波（模拟非正弦的真实呼吸波形）。"""
+    """呼吸：基频 + 多次谐波（模拟非正弦的真实呼吸波形）。
+Respiration: fundamental plus harmonics, giving a non-sinusoidal waveform closer to real breathing."""
     x = np.zeros_like(t)
     for k in range(1, n_harm + 1):
         amp = (a_resp / (k ** decay)) * float(rng.uniform(0.7, 1.3))
@@ -81,7 +86,8 @@ def make_cardiac(
     rsa: float = 0.03,
     riav: float = 0.15,
 ) -> tuple[np.ndarray, np.ndarray, float]:
-    """心跳：非均匀高斯脉冲串（含 RSA + RIAV）。"""
+    """心跳：非均匀高斯脉冲串（含 RSA + RIAV）。
+Heartbeat: a non-uniform Gaussian pulse train with RSA and RIAV."""
     T = float(t[-1])
     ph_rsa = rng.uniform(0.0, 2.0 * np.pi)
     ph_riav = rng.uniform(0.0, 2.0 * np.pi)
@@ -118,7 +124,8 @@ def make_motion(
     dur_s: tuple[float, float] = (0.5, 2.0),
     scale: float = 1.0,
 ) -> tuple[np.ndarray, int]:
-    """运动：稀疏宽带突发（带通白噪声）。"""
+    """运动：稀疏宽带突发（带通白噪声）。
+Motion: sparse broadband bursts, i.e. band-passed white noise."""
     x = np.zeros_like(t)
     if scale <= 0:
         return x, 0
@@ -138,7 +145,8 @@ def make_motion(
 
 def make_drift(t: np.ndarray, fs: float, rng: np.random.Generator, amp_mm: float,
                scale: float = 1.0) -> np.ndarray:
-    """基线漂移：白噪声经极低频低通（约 1/f 形）。scale=0 时不生成。"""
+    """基线漂移：白噪声经极低频低通（约 1/f 形）。scale=0 时不生成。
+Baseline drift: white noise through a very-low-frequency low-pass, roughly 1/f. scale=0 disables it."""
     if scale <= 0 or amp_mm <= 0:
         return np.zeros_like(t)
     sos = signal.butter(2, 0.05 / (fs / 2), btype="low", output="sos")
@@ -151,7 +159,8 @@ def make_drift(t: np.ndarray, fs: float, rng: np.random.Generator, amp_mm: float
 # 单样本生成
 # ---------------------------------------------------------------------------
 def make_one_sample(cfg: dict, combo: tuple[float, float, float], k: int, seed: int) -> dict:
-    """按 (snr_db, hr_bpm, rr_bpm) 与第 k 个重复，生成一条样本。"""
+    """按 (snr_db, hr_bpm, rr_bpm) 与第 k 个重复，生成一条样本。
+Generate one sample for a given (snr_db, hr_bpm, rr_bpm) and repeat index k."""
     fs = float(cfg["fs"])
     duration = float(cfg["duration_s"])
     n = int(round(duration * fs))
@@ -417,7 +426,8 @@ def build_dataset(args) -> dict:
 
 
 def _setup_cjk_font() -> None:
-    """让 matplotlib 能显示中文（Windows 常见的微软雅黑/黑体）。"""
+    """让 matplotlib 能显示中文（Windows 常见的微软雅黑/黑体）。
+Let matplotlib render Chinese with the usual Windows fonts."""
     import matplotlib
     from matplotlib import font_manager
 

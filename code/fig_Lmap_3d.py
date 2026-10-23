@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图 T8-L3D v2：两片"覆盖率地形"用网格线绘制，避免实体曲面互相遮挡。"""
+"""图 T8-L3D v2：两片"覆盖率地形"用网格线绘制，避免实体曲面互相遮挡。
+Figure T8-L3D v2: two coverage surfaces drawn as wireframe so they do not occlude each other."""
 from __future__ import annotations
 
 import matplotlib

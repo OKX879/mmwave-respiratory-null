@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨数据集零点分析汇总图（三面板）。"""
+"""跨数据集零点分析汇总图（三面板）。
+Three-panel summary figure for the cross-dataset null analysis."""
 from __future__ import annotations
 
 from pathlib import Path

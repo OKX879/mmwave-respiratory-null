@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""屏气对照图（按被试）：110 名受试者，窗内 vs 窗外深凹陷率。"""
+"""屏气对照图（按被试）：110 名受试者，窗内 vs 窗外深凹陷率。
+Breath-hold control by subject: 110 subjects, deep-dip rate inside versus outside the window."""
 from pathlib import Path
 
 import numpy as np

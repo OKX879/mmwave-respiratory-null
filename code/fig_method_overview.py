@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图（方法总览）：小波分解参数选择 pipeline（§3 方法部分新增总览图）。"""
+"""图（方法总览）：小波分解参数选择 pipeline（§3 方法部分新增总览图）。
+Figure: overview of the wavelet parameter-selection pipeline, new in section 3."""
 from __future__ import annotations
 
 import matplotlib

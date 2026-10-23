@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""解剖 emo P02 反例：与其它被试对比信号几何、漂移速度、相位质量。"""
+"""解剖 emo P02 反例：与其它被试对比信号几何、漂移速度、相位质量。
+Dissect the emo P02 counter-example: signal geometry, drift speed and phase quality against other subjects."""
 from __future__ import annotations
 
 import json

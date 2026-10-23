@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""稳健性验证 1：漂移补偿窗口敏感性 + 漂移幅度与固定相位锁定的关系。"""
+"""稳健性验证 1：漂移补偿窗口敏感性 + 漂移幅度与固定相位锁定的关系。
+Robustness check 1: drift-window sensitivity, and how drift amplitude relates to fixed phase locking."""
 from __future__ import annotations
 
 import json
@@ -35,7 +36,8 @@ def slow_mean(z, fs, win_s):
 
 
 def circ_std_deg(theta):
-    """圆标准差（度）。"""
+    """圆标准差（度）。
+Circular standard deviation in degrees."""
     r = abs(np.mean(np.exp(1j * theta)))
     return float(np.degrees(np.sqrt(max(-2 * np.log(max(r, 1e-12)), 0.0))))
 
