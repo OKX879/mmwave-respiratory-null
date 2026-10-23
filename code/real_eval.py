@@ -1,33 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T5-2 真实数据矩阵评估：在 capsule 的真实【宽带位移】上跑缩减候选池。
-
-与合成矩阵的关系
-----------------
-复用完全相同的实现（`matrix_eval.decompose_dwt` + `criteria_lib.evaluate_all` +
-`criteria_lib.estimate_hr_psd`），**只换输入信号**。这样"基 × 层数 × 阈值 × 边界"
-的比较口径与合成侧逐字一致，差异只能归因于数据本身。
-
-与合成侧的**实质差别（必须如实声明）**
---------------------------------------
-1. **没有干净源** → 合成侧可算的 SDR / corr_card 在真实数据上不可得；
-   真实侧金标只有 **HR MAE（对 ECG R 峰）**，以及逐拍 beat F1（简化检测器）。
-2. **单通道** → rc1（跨通道相干）/ rc2（跨距离格相干）在真实侧仍为 nan
-   （rc2 需要原始立方体的邻 bin，本步骤不做，见 T5-3）。
-3. **信号长度 20 s**（生产链 history），比合成侧的 30 s 短。
-
-候选池为何缩减
---------------
-T5 是**定向迁移检验**，不是重跑 2025 候选矩阵：20 例样本上跑满池统计功效不足。
-因此池 = 15 基 × L∈{2..6} × 5 阈值 × 主边界(symmetric) 375 个，
-外加 L=4 × 其余两种边界 150 个（供边界零效应的**配对**检验）。
-
-用法
-----
-    python real_eval.py                      # 全量
-    python real_eval.py --only 1 2           # 冒烟
-    python real_eval.py --jobs 4             # 并行（可选）
-"""
+"""真实数据矩阵评估：在 capsule 的真实【宽带位移】上跑缩减候选池。"""
 
 from __future__ import annotations
 
@@ -95,11 +68,7 @@ def max_level(w: str, n: int) -> int:
 def beat_f1(pred_ms: np.ndarray, gold_ms: np.ndarray, fs: float,
             tol_ms: float = 150.0, lag_max_ms: float = 400.0,
             lag_step_ms: float = 20.0) -> tuple[float, float, float, float]:
-    """简化逐拍 F1：全局滞后对齐（±400 ms，20 ms 步长）+ ±150 ms 容差配对。
-
-    与 benchmark_v1 的 beat 口径同构，但检测器为简化实现（见 detect_beats），
-    **不能与生产链的 beat F1 直接比较**。
-    """
+    """简化逐拍 F1：全局滞后对齐（±400 ms，20 ms 步长）+ ±150 ms 容差配对。"""
     if len(pred_ms) < 3 or len(gold_ms) < 3:
         return float("nan"), float("nan"), float("nan"), float("nan")
     best = (float("nan"), float("nan"), float("nan"), float("nan"))
@@ -127,15 +96,7 @@ def beat_f1(pred_ms: np.ndarray, gold_ms: np.ndarray, fs: float,
 
 
 def detect_beats(x: np.ndarray, fs: float) -> np.ndarray:
-    """简化心搏检测：对心搏分量做自适应阈值峰检测，返回峰时刻（ms）。
-
-    生产链的 EventDetector 使用范围为 [333, 1500] ms 的 IBI 门控；此处做同样的
-    生理过滤，但阈值取 max(0.35σ, 0.6×局部窗最大值)（项目既有的弱峰改进思路）。
-
-    性能：局部最大值窗用 `maximum_filter1d`（C 实现，O(n)），而不是 Python 逐点
-    循环 —— 后者在原实现里是 O(n·w)，实测单次 5.4 ms，是 285 trial 全量评估的
-    主要瓶颈之一（单候选单例 24 ms 里占 22%）。
-    """
+    """简化心搏检测：对心搏分量做自适应阈值峰检测，返回峰时刻（ms）。"""
     from scipy.signal import find_peaks
     from scipy.ndimage import maximum_filter1d
     x = np.asarray(x, dtype=float)

@@ -1,35 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""无参考评价准则库（对应《小波基系统选择_实验计划.md》§4）。
-
-设计原则
---------
-1) 与"小波实现"解耦：本库的输入是【已完成分解的产物】（card/resp 分量等），
-   不关心它是用 DWT、CWT 还是 EWT 得到的。因此同一套准则可对所有候选基复用。
-2) 无参考：不使用任何"干净参考信号"。信息来自三类替代参考 ——
-   PB = 生理先验、RC = 冗余一致性、SM = 数学结构。
-3) 方向约定：每个准则都声明 direction（"up" 越大越好 / "down" 越小越好），
-   以便后续做【秩聚合】而不是线性加权（避免引入权重调参点）。
-4) 退化警示：危险的准则标记 report_only 或给出合用建议：
-   - SM3（保留能量比）非单调，不能当分数；
-   - SM5（脊线平滑度）可被"过度平滑的假输出"骗，须与 SM4 合用。
-
-口径提醒
---------
-- 频段常量与生产链一致：呼吸 0.08-0.6 Hz，心率带 1.0-2.5 Hz，展示带 0.7-3.0 Hz。
-- PB5 的"呼吸/心跳幅度比"区间是【场景相关】的，默认 [5, 50] 量级需按
-  硬件与体位标定，不要当作普适常数。
-
-用法
-----
-    from criteria_lib import evaluate_all
-    res = evaluate_all({"card": card, "resp": resp, "mix": mix, "card_ch": ch}, fs=100.0)
-
-自检
-----
-    python criteria_lib.py --selftest --npz synthetic_data/grid.npz
-"""
-
+"""无参考评价准则库：14 个 bin 级打分函数，供 matrix_eval 与 calibrate_criteria 调用。"""
 from __future__ import annotations
 
 import argparse
@@ -73,11 +44,7 @@ def _psd_at(f: np.ndarray, P: np.ndarray, fq) -> np.ndarray:
 
 
 def _pairwise_coherence(rows: Sequence[np.ndarray]) -> float:
-    """一组（复数或实数）分量的两两相干均值。
-
-    实数信号下退化为 |Pearson 相关|；复数信号下为标准复数相干
-    rho = |Σ a·conj(b)| / sqrt(Σ|a|²·Σ|b|²)。
-    """
+    """一组（复数或实数）分量的两两相干均值。"""
     rows = [np.asarray(r) for r in rows]
     C = len(rows)
     if C < 2:
@@ -97,10 +64,7 @@ def _pairwise_coherence(rows: Sequence[np.ndarray]) -> float:
 # PB —— 生理先验类
 # ---------------------------------------------------------------------------
 def pb1_spectral_concentration(x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND) -> float:
-    """心搏带能量集中度：带内功率 / 全带功率。方向 up。
-
-    陷阱：单用会被"窄带假峰"骗（呼吸谐波也是窄带），须与 PB2 合用。
-    """
+    """心搏带能量集中度：带内功率 / 全带功率。方向 up。"""
     f, P = _psd(x, fs)
     m = (f >= band[0]) & (f <= band[1])
     tot = float(np.sum(P))
@@ -113,26 +77,7 @@ def _refine_peak_freq(
     x: np.ndarray, fs: float, band: tuple[float, float], f_coarse: float,
     half_width_hz: float, df_target: float = 0.004, prefilter: bool = True, order: int = 4,
 ) -> float:
-    """在 f_coarse ± half_width 内精化峰频（零填充加窗 FFT + 抛物线插值）。
-
-    D1 修复（关键，20261020）
-    ------------------------
-    原 HR/呼吸估计直接用 Welch 的 argmax，频率网格 = fs/nperseg
-    （fs=100、nperseg=2048 → 0.0488 Hz = **2.93 BPM**），且**无插值** →
-    心率（与呼吸率）估计被量化到 2.93 BPM 的离散网格上。实测真值
-    60.0→58.59、62.9→61.52、72.0→73.24，全部是 2.93 的整数倍，导致
-    <1.47 BPM 的差异不可分辨（HR_MAE 这把尺子的分辨率仅 2.93 BPM）。
-
-    本函数**保持"Welch 定峰 + 生理/SNR 门控"的语义不变**（那些门限阈值
-    是在 Welch 谱上标定出来的，改了会破坏标定），只把**峰位置**在高分辨率
-    谱上重算：
-
-      1) 带限（用比 band 略宽的边带，避免带边衰减把带边缘的峰压低）
-      2) Hann 窗 + 零填充 rfft（n_fft 取 2 的幂，目标 df ≈ 0.004 Hz）
-      3) 在 f_coarse ± half_width 内取 argmax，再做三点抛物线插值
-
-    口径与生产链 RHC 的"零填充 FFT + 抛物线插值"一致。
-    """
+    """在 f_coarse ± half_width 内精化峰频（零填充加窗 FFT + 抛物线插值）。"""
     if not np.isfinite(f_coarse):
         return float(f_coarse)
     y = np.asarray(x, dtype=float)
@@ -171,14 +116,7 @@ def estimate_resp_freq(
     snr_min: float = 1.8,
     refine: bool = True,
 ) -> Optional[float]:
-    """估计呼吸基频 f_resp（Hz），口径对齐生产链 RHC 的估计器。
-
-    带通收在 0.14-0.5 Hz 以避开 Welch 最左 bin 的 1/f 伪峰；
-    生理合理性硬边界 + SNR 门限（主峰 / 带内中位背景）。
-
-    refine=True（默认）时用 `_refine_peak_freq` 精化峰位置（修 D1 量化）——
-    **门控仍用 Welch 谱**（阈值是在 Welch 谱上标定的），只把频率细化。
-    """
+    """估计呼吸基频 f_resp（Hz），口径对齐生产链 RHC 的估计器。"""
     n = len(x)
     if n < 256:
         return None
@@ -213,15 +151,7 @@ def pb2_resp_harmonic_residue(
     k_max: int = 6,
     x_for_fresp: Optional[np.ndarray] = None,
 ) -> float:
-    """呼吸谐波残余比 RHR：心率带内【落在 k·f_resp 附近】的能量 / 非谐波区能量。方向 down。
-
-    这是本项目头号失败模式（呼吸谐波落进心搏带）的直接度量，
-    复用生产链 RHC 的思路，但不需要金标。
-
-    重要：f_resp 必须从【宽带信号】估计（生产链即如此），不能从"心搏分量"估计
-    ——后者已把呼吸去掉，估出来的是垃圾。且所有候选基共用同一个 f_resp，
-    比较才公平（否则 f_resp 估计随基变化，会成为混杂因素）。
-    """
+    """呼吸谐波残余比 RHR：心率带内【落在 k·f_resp 附近】的能量 / 非谐波区能量。方向 down。"""
     f, P = _psd(x_card, fs)
     m = (f >= band[0]) & (f <= band[1])
     if not m.any():
@@ -249,11 +179,7 @@ def pb3_ibi_physio_yield(
     max_ms: float = 1500.0,
     height_factor: float = 0.5,
 ) -> dict:
-    """IBI 生理合格率（用生理先验当"软参考"）。主方向 up（合格率）。
-
-    返回 dict：yield（合格率）、cv（变异系数）、n（峰数）。
-    注意陷阱：漏检会被误判为"合格"（周期被拉长），须与 PB2 合用。
-    """
+    """IBI 生理合格率（用生理先验当"软参考"）。主方向 up（合格率）。"""
     x = np.asarray(x_card, dtype=float)
     std = float(np.std(x))
     if std <= 1e-12:
@@ -275,10 +201,7 @@ def pb3_ibi_physio_yield(
 
 
 def pb4_cardiac_amp_plausibility(x_card: np.ndarray, lo_mm: float = 0.02, hi_mm: float = 1.0) -> float:
-    """心搏位移幅度合理性（亚毫米）→ 返回 [0,1] 梯形隶属度。方向 up。
-
-    量纲相关：lo/hi 须按硬件与体位标定（默认按亚毫米级心搏位移）。
-    """
+    """心搏位移幅度合理性（亚毫米）→ 返回 [0,1] 梯形隶属度。方向 up。"""
     rms = float(np.sqrt(np.mean(np.asarray(x_card, dtype=float) ** 2)))
     if rms <= 0 or hi_mm <= lo_mm:
         return 0.0
@@ -290,11 +213,7 @@ def pb4_cardiac_amp_plausibility(x_card: np.ndarray, lo_mm: float = 0.02, hi_mm:
 def pb5_resp_cardiac_amp_ratio(
     x_resp: np.ndarray, x_card: np.ndarray, lo: float = 5.0, hi: float = 50.0
 ) -> float:
-    """呼吸/心跳幅度比合理性 → [0,1]。方向 up。
-
-    区间为【场景相关】经验值（静息呼吸位移通常为心搏的 10-50 倍），
-    须按硬件标定；不要当普适常数。
-    """
+    """呼吸/心跳幅度比合理性 → [0,1]。方向 up。"""
     rr = float(np.sqrt(np.mean(np.asarray(x_resp, dtype=float) ** 2)))
     rc = float(np.sqrt(np.mean(np.asarray(x_card, dtype=float) ** 2)))
     if rc <= 0 or hi <= lo:
@@ -320,11 +239,7 @@ def rc2_cross_bin_coherence(card_bins: Sequence[np.ndarray]) -> float:
 
 def estimate_hr_psd(x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND,
                     refine: bool = True) -> float:
-    """简易心率估计（Welch 谱主峰 + 峰位精化）。口径同生产链的单路 PSD 主峰。
-
-    refine=True（默认）时用 `_refine_peak_freq` 精化峰频率，修 D1 量化
-    （原实现 argmax 网格 = fs/nperseg = 2.93 BPM，<1.47 BPM 不可分辨）。
-    """
+    """简易心率估计（Welch 谱主峰 + 峰位精化）。口径同生产链的单路 PSD 主峰。"""
     f, P = _psd(x, fs)
     m = (f >= band[0]) & (f <= band[1])
     if not m.any() or float(P[m].max()) <= 0:
@@ -341,11 +256,7 @@ def rc3_cross_window_stability(
     n_sub: int = 4,
     hr_fn=estimate_hr_psd,
 ) -> float:
-    """跨窗稳定性：把窗切成 n_sub 个子窗各自估 HR，取 std（BPM）。方向 down。
-
-    衡量分解的可重复性。注意：呼吸也很稳定，故它区分的是
-    "稳定 vs 不稳定"，而不是"心跳 vs 呼吸"。
-    """
+    """跨窗稳定性：把窗切成 n_sub 个子窗各自估 HR，取 std（BPM）。方向 down。"""
     x = np.asarray(x_card, dtype=float)
     L = len(x) // max(1, n_sub)
     if L < 64:
@@ -394,11 +305,7 @@ def sm3_retained_energy_ratio(x: np.ndarray, recon: np.ndarray) -> float:
 def sm4_hps_prominence(
     x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND, order: int = 3
 ) -> float:
-    """HPS 谐波结构突出度：HPS(f)=P(f)·P(2f)·P(3f)… 主峰 / 带内中位背景。方向 up。
-
-    依据：真心搏是脉冲式，带丰富高次谐波；噪声/残留呼吸在高次谐波处是平的。
-    复用生产链既有 HPS 思路。
-    """
+    """HPS 谐波结构突出度：HPS(f)=P(f)·P(2f)·P(3f)… 主峰 / 带内中位背景。方向 up。"""
     f, P = _psd(x, fs)
     Ps = np.maximum(P, 1e-12)
     hps = Ps.copy()
@@ -412,10 +319,7 @@ def sm4_hps_prominence(
 
 
 def sm5_ridge_smoothness(x: np.ndarray, fs: float, band: tuple[float, float] = CARD_BAND) -> float:
-    """时频脊线连续性：心搏带瞬时频率（Hilbert 解析信号相位差分）的 std（Hz）。方向 down。
-
-    陷阱：可被"过度平滑的假输出"骗（输出近常数 → std 极小），须与 SM4 合用。
-    """
+    """时频脊线连续性：心搏带瞬时频率（Hilbert 解析信号相位差分）的 std（Hz）。方向 down。"""
     y = _bandpass(x, fs, band)
     z = hilbert(y)
     ph = np.unwrap(np.angle(z))
@@ -464,19 +368,7 @@ _BY_KEY = {c.key: c for c in CRITERIA}
 
 def evaluate_all(res: dict, fs: float, *, resp_freq: Optional[float] = None,
                  pb5_range: tuple[float, float] = (5.0, 50.0)) -> dict:
-    """对一份分解产物计算全部可用准则。
-
-    参数 res 的键（缺哪个就对应准则返回 nan）：
-        card         (N,)     重构心搏分量         —— 必需
-        resp         (N,)     重构呼吸分量         —— pb5/sm2
-        mix          (N,)     原始输入             —— sm1/sm3
-        recon        (N,)     全重构               —— sm3
-        card_ch      (C,N)    各通道心搏分量       —— rc1
-        card_bins    (B,N)    各距离格心搏分量     —— rc2
-        card_per_res [(N,),..] 各分辨率层心搏重构  —— rc4
-        coeffs       [ ... ]  小波系数             —— sm1
-        resp_freq    float    已知呼吸基频         —— pb2（否则内部估计）
-    """
+    """对一份分解产物计算全部可用准则。"""
     out: dict[str, float] = {}
     card = res.get("card")
     resp = res.get("resp")

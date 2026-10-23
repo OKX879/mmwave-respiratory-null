@@ -1,23 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨采样率复核：DWT 层数的"边界"是频带覆盖规则，不是数字 4。
-
-背景
-----
-100 Hz 平台上论文给出"L ≤ 4 安全"：心搏分量取自近似带 aL，
-要求 aL 的上边界 fs/2^(L+1) ≥ 3.0 Hz，即 L ≤ log2(fs/6)。
-在 10 Hz 的 Parralejo 数据上这条不等式无解（log2(10/6)=0.74），
-因此 aL 取心搏的约定不可用，必须改由细节带承载心搏——
-按同一覆盖规则，最早能覆盖 1.0–2.5 Hz 的层数是 L=3。
-
-本脚本只测一件事：在已知心搏频率 f_HR（ECG 金标）处，
-各 (基, L) 组合重构出的心搏分量保留了多少该频率的幅度：
-
-    Q = |X_c(f_HR)| / |X(f_HR)|
-
-Q 是传递增益，不是估计精度，因此不受心率估计器可靠性影响；
-这也正是 10 Hz 平台能做的部分（该平台的 HR 估计本身不可靠，见 probe_v2）。
-"""
+"""跨采样率复核：DWT 层数的"边界"是频带覆盖规则，不是数字 4。"""
 from __future__ import annotations
 
 import numpy as np
@@ -42,12 +25,7 @@ def level_bands(level, fs):
 
 
 def assign(band, rule='fixed07'):
-    """层归属。
-
-    fixed07  : 论文 100 Hz 设计的原规则——上界≤0.7 Hz 归呼吸、下界≥0.7 归心搏、
-               跨界归呼吸。0.7 Hz 来自展示带下缘，属"固定常数"。
-    overlap  : 与心搏带 [1.0,2.5] Hz 有正重叠即归心搏。按频带覆盖定义，随 fs 自适应。
-    """
+    """层归属。"""
     lo, hi = band
     if rule == 'overlap':
         return 'card' if (min(hi, CARD[1]) - max(lo, CARD[0])) > 0 else 'resp'
@@ -59,11 +37,7 @@ def assign(band, rule='fixed07'):
 
 
 def recon_approx(x, w, L, fs):
-    """约定 A 的忠实实现：只保留近似带 aL，细节全部置零，再重构。
-
-    与 cardiac_recon 的区别：后者始终零掉 aL、从细节层拼心搏分量；
-    这里反过来，因为约定 A 的定义就是"心搏取自近似带"。
-    """
+    """约定 A 的忠实实现：只保留近似带 aL，细节全部置零，再重构。"""
     c = pywt.wavedec(x, w, level=L, mode='symmetric')
     coeffs = [c[0]] + [np.zeros_like(cc) for cc in c[1:]]
     xr = pywt.waverec(coeffs, w, mode='symmetric')

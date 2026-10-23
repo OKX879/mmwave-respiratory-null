@@ -1,27 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""n_deep 的校准：给出 R1 里"calibrated threshold"的具体数字。
-
-R1 的用法是**逐 bin 的前置门控**：在锁定前用一段 20--30 s 的窗，数深凹陷事件
-$n_{\\rm deep}$，超过阈值就拒绝该 bin。因此校准必须在**逐 bin × 逐前后半段**上做，
-而不是只看被选中的那个 bin。
-
-协议（与 `lei_D_prospective.py` 同一套前瞻逻辑，但覆盖全部候选 bin）
--------------------------------------------------------------------
-每条记录切成前/后各 30 s：
-    用前半段算  n1 = 深凹陷个数、D1 = 凹陷帧占比、|A_s|/R
-    用后半段算  n2 = 深凹陷个数
-判据：n1 预测 (n2 >= 1) 与 (n2 >= 5)。
-输出：ROC/AUC（并列值用平均秩，修 `lei_D_prospective.py` 里 argsort 并列排名的问题）、
-      阈值扫描表（sens/spec/PPV）、Youden 最优点，以及**回归掉 |A_s|/R 之后**的同款阈值。
-
-事件定义逐字沿用 §V 的 Event definition：
-    局部极小、幅值 < 0.35×该段中位、与前一极小间隔 >= 0.25 s、prominence >= 0.15σ。
-
-用法
-----
-    python lei_ndeep_calibration.py
-"""
+"""n_deep 的校准：给出 R1 里"calibrated threshold"的具体数字。"""
 from __future__ import annotations
 
 from pathlib import Path

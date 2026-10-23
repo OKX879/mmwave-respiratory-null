@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补测 10 Hz 平台的"约定 A"（心搏取自近似带 aL）。
-
-为什么必须补
-------------
-§4.13 之前的 10 Hz 分析只跑了"从细节带取心搏"（cardiac_recon 始终零掉 aL），
-因此表 T8-B 里 A 列在 10 Hz 的"无解"只是公式结论，没有实测对照。
-20 Hz 平台上 A 的实测（L=1 时 100% 达标）说明必须回头补这一列，
-否则三点对比会缺一角、且"10 Hz 必须用 B"这句话会过头。
-"""
+"""补测 10 Hz 平台的"约定 A"（心搏取自近似带 aL）。"""
 from __future__ import annotations
 
 import numpy as np

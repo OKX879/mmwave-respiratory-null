@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""把 论文_小波基选择_v0.1.md 转成 IEEEtran 双栏 LaTeX（XeLaTeX + xeCJK）。
-
-只做机械转换，不改内容：
-  # / ## / ###      → section / subsection / subsubsection
-  | 表 |            → booktabs tabular（>5 列自动 table* + resizebox）
-  ![](path)         → figure + includegraphics
-  ``` 代码块 ```     → verbatim
-  > 引用            → quote
-  - / 1. 列表        → itemize / enumerate
-  **粗** *斜* `码`   → textbf / emph / texttt
-  【N】              → \\cite{rN}
-  $...$             → 原样保留
-
-用法：python md2tex.py   → 论文_小波基选择_IEEE.tex
-"""
+"""把 论文_小波基选择_v0.1.md 转成 IEEEtran 双栏 LaTeX（XeLaTeX + xeCJK）。"""
 from __future__ import annotations
 
 import re

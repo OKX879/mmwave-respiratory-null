@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图（方法总览）：小波分解参数选择 pipeline（§3 方法部分新增总览图）。
-
-四组件：候选矩阵 → 无参考准则评分 → C3 校准（合成金标 + 留出闭环）→ 三段式决策。
-核心逻辑：先在"知道答案"处校准，再到"不知道答案"处使用。
-"""
+"""图（方法总览）：小波分解参数选择 pipeline（§3 方法部分新增总览图）。"""
 from __future__ import annotations
 
 import matplotlib

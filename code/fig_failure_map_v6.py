@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Fig. failure map, v6: swing axis extended to the measured range.
-
-(a) analytic depth map over rho in [0.1, 2.5] and theta_max in [0, 16] rad;
-(b) distribution of the measured peak swing over the 161 records;
-(c) the r-D bridge (unchanged from v3).
-"""
+"""Fig. failure map, v6: swing axis extended to the measured range."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -37,11 +32,7 @@ RED = "#E45756"
 
 
 def r_of(rho, th):
-    """Normalized depth min|z|/max|z| for an arc of half-swing th centered at 0.
-
-    The deepest point is the antiphase direction pi when the arc reaches it,
-    otherwise the arc endpoint nearest to pi.
-    """
+    """Normalized depth min|z|/max|z| for an arc of half-swing th centered at 0."""
     th_deep = np.where(th >= np.pi, np.pi, th)
     return np.sqrt(1 + rho ** 2 + 2 * rho * np.cos(th_deep)) / (1 + rho)
 
@@ -90,7 +81,7 @@ def panel_a(ax):
     ax.set_ylim(0, 28)
     ax.set_xlabel(r"amplitude ratio $\rho=A_c/A_s$")
     ax.set_ylabel(r"peak swing $\theta_{\max}$ (rad)")
-    ax.set_title("(a) failure set $r\leq0.15$", fontsize=9)
+    ax.set_title(r"(a) failure set $r\leq0.15$", fontsize=9)
 
 
 def panel_b(ax):

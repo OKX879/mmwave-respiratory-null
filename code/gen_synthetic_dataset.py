@@ -1,45 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""合成雷达位移域生命体征数据集生成器。
-
-实现《小波基系统选择_实验计划.md》§1.1 的信号合成规范：
-
-    d(t) = d_resp(t) + d_card(t) + d_mot(t) + d_drift(t) + n(t)
-
-分量说明
---------
-d_resp  呼吸：1 个低频正弦（可选叠加 2 次谐波），准周期、窄带。
-d_card  心跳：非均匀高斯脉冲串（脉冲式，天然带 2f/3f 谐波）。
-        含 RSA（呼吸性窦性心律不齐，使心率随时间起伏）
-        与 RIAV（呼吸性幅度调制）。
-d_mot   运动：稀疏的宽带突发（带通白噪声，2-5 段）。
-d_drift 基线漂移：极低频 1/f 型缓慢游走。
-n       高斯白噪声，按【心搏带内 SNR】标定（见 §1.1）。
-
-为什么心跳用脉冲串而非正弦
-------------------------
-真实心搏是脉冲式的，频谱上带 2f/3f 谐波；用正弦会抹掉谐波结构，
-使 SM4(HPS 谐波突出度) 这类准则失去判别力。
-
-为什么生成 8 通道
-----------------
-RC 类无参考准则（跨通道相干）需要多通道数据。各通道共享同一真实位移，
-但叠加独立噪声并带轻微增益差 —— 这样"分解正确"时跨通道相干高、
-"分解错误"时低，准则才可被验证。
-
-关于距离格（bin）
-----------------
-本生成器只合成【位移域】时间序列，刻意绕过空间前端，
-以便把"小波环节"作为唯一变量。因此 manifest 中 bin_index 记为 -1。
-
-输出
-----
-<out>/<split>.npz      多通道观测 + 各干净分量（金标）
-<out>/manifest.csv     每条样本的元数据
-<out>/config.json      生成器配置（保证可复现）
-<out>/README.txt       字段说明
-<out>/demo.png         （--demo-plot）单样本可视化自检
-"""
+"""合成雷达位移域生命体征数据集生成器。"""
 
 from __future__ import annotations
 
@@ -73,13 +34,7 @@ def bandpower(x: np.ndarray, fs: float, band: tuple[float, float]) -> float:
 
 @lru_cache(maxsize=8)
 def noise_band_factor(fs: float, band: tuple[float, float]) -> float:
-    """单位方差白噪声经 bandpower() 实测的【带内增益因子】。
-
-    为什么需要它：若按理想矩形带的解析式 sigma^2*(2bw/fs) 标定噪声，
-    与"用实际 Butterworth 滤波器测得"的带内功率不一致（带边缘有衰减，
-    且窄带滤波器的等效带宽不等于 bw），导致实测 SNR 系统性偏高。
-    改为先用白噪声实测因子，再反解 sigma —— 使标定与测量同口径。
-    """
+    """单位方差白噪声经 bandpower() 实测的【带内增益因子】。"""
     rng = np.random.default_rng(0)
     w = rng.normal(0.0, 1.0, 1 << 18)
     return bandpower(w, fs, band)
@@ -88,11 +43,7 @@ def noise_band_factor(fs: float, band: tuple[float, float]) -> float:
 def noise_sigma_for_cardiac_snr(
     card_clean: np.ndarray, fs: float, snr_db: float, band: tuple[float, float] = SNR_REF_BAND
 ) -> tuple[float, float]:
-    """求白噪声 sigma，使【实测带内噪声功率】= 心搏带内功率 / 10^(SNR/10)。
-
-    与测量同口径：sigma = sqrt(P_noise_target / factor)，factor 由
-    noise_band_factor() 用同一滤波器实测得到。
-    """
+    """求白噪声 sigma，使【实测带内噪声功率】= 心搏带内功率 / 10^(SNR/10)。"""
     p_card = bandpower(card_clean, fs, band)
     p_noise_target = p_card / (10.0 ** (snr_db / 10.0))
     factor = noise_band_factor(fs, band)
@@ -107,25 +58,7 @@ def make_respiration(
     t: np.ndarray, f_resp: float, a_resp: float, rng: np.random.Generator,
     n_harm: int = 6, decay: float = 3.0,
 ) -> np.ndarray:
-    """呼吸：基频 + 多次谐波（模拟非正弦的真实呼吸波形）。
-
-    为什么必须加谐波
-    ----------------
-    真实呼吸波形不对称，其 k 次谐波会依次落进心搏带
-    （f_resp≈0.2-0.33 Hz 时，k=3..6 恰好覆盖 0.6-2.0 Hz）。这是本项目
-    已知的头号失败模式（生产链专门有 RHC 呼吸谐波抵消）。
-    若把呼吸建模成纯正弦，则 PB2（呼吸谐波残余比）与 SM4（谐波结构）
-    在合成数据上就无从检验 —— 相当于漏掉了最该测的那部分。
-
-    谐波衰减指数 decay
-    ------------------
-    幅度按 a_resp / k**decay 递减。decay=3.0（默认）为现实中等不对称；
-    decay=2.0 会产生"带内呼吸谐波远超心搏（2-7 倍）"的极端条件 ——
-    此时任何按频带划分的小波都无法分离心跳，可作为【谐波主导】对照
-    条件来刻画边界（实测：该条件下全部候选 HR 误差≈17-29 BPM、SDR≈0）。
-
-    幅度归一化到峰值 = a_resp，因此 a_resp 仍表示"呼吸位移幅度(mm)"。
-    """
+    """呼吸：基频 + 多次谐波（模拟非正弦的真实呼吸波形）。"""
     x = np.zeros_like(t)
     for k in range(1, n_harm + 1):
         amp = (a_resp / (k ** decay)) * float(rng.uniform(0.7, 1.3))
@@ -148,11 +81,7 @@ def make_cardiac(
     rsa: float = 0.03,
     riav: float = 0.15,
 ) -> tuple[np.ndarray, np.ndarray, float]:
-    """心跳：非均匀高斯脉冲串（含 RSA + RIAV）。
-
-    返回 (x, beat_times_s, hr_mean_bpm)。
-    hr_mean_bpm 为瞬时心率的平均值，作为真实心率金标。
-    """
+    """心跳：非均匀高斯脉冲串（含 RSA + RIAV）。"""
     T = float(t[-1])
     ph_rsa = rng.uniform(0.0, 2.0 * np.pi)
     ph_riav = rng.uniform(0.0, 2.0 * np.pi)
@@ -189,10 +118,7 @@ def make_motion(
     dur_s: tuple[float, float] = (0.5, 2.0),
     scale: float = 1.0,
 ) -> tuple[np.ndarray, int]:
-    """运动：稀疏宽带突发（带通白噪声）。
-
-    scale=0 时完全不生成（用于"无运动"对照，避免运动强度污染 SNR 扫描）。
-    """
+    """运动：稀疏宽带突发（带通白噪声）。"""
     x = np.zeros_like(t)
     if scale <= 0:
         return x, 0

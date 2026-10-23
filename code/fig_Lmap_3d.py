@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图 T8-L3D v2：两片"覆盖率地形"用网格线绘制，避免实体曲面互相遮挡。
-
-第三维 = 心搏带被保留层覆盖的比例
-    c(fs, L) = |保留频带 ∩ [f_lo, f_hi]| / (f_hi - f_lo)
-约定 A（只留 aL）随 L 下降；约定 B（留细节层）随 L 上升。两片到 1 的高原即允许域。
-"""
+"""图 T8-L3D v2：两片"覆盖率地形"用网格线绘制，避免实体曲面互相遮挡。"""
 from __future__ import annotations
 
 import matplotlib

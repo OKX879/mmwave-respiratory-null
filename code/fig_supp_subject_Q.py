@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""§4.13 补充材料图：逐受试者 Q 分布，以及它与心率的依赖。
-
-每个点是一个人（4 条记录取中位），不是一条记录。
-"""
+"""§4.13 补充材料图：逐受试者 Q 分布，以及它与心率的依赖。"""
 from __future__ import annotations
 
 import matplotlib

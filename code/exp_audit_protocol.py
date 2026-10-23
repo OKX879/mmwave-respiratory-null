@@ -1,18 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""口径审计：① 复现 Table II 的事件定义；② 用记录级口径重算；③ 复核距离轴。
-
-A. 事件定义扫描：在 (深度阈值 × prominence × 最小间隔) 上网格搜索，
-   找出能精确复现 7/26/33（=13.0/48.1/62.3%）的那一组。
-B. 记录级重算：固定 Table II 的选 bin 协议（每条记录 1 个 bin），
-   比较五种减圆心估计 + 目标真实距离插值。
-C. 距离轴复核：逐 bin 算"相位呼吸相干性"，含受试者的 bin 应显著高于静物 bin；
-   若峰位落在名义 r/ΔR 上，说明 ΔR=c/2B 成立。
-
-用法
-----
-    python exp_audit_protocol.py
-"""
+"""口径审计：① 复现 Table II 的事件定义；② 用记录级口径重算；③ 复核距离轴。"""
 from __future__ import annotations
 
 import itertools

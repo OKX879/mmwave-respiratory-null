@@ -1,38 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""候选矩阵批量评估脚本（对应《小波基系统选择_实验计划.md》§3）。
-
-做什么
-------
-对候选小波基矩阵（基 × 层数 × 阈值规则 × 边界模式，DWT 线 / CWT 线），
-在合成数据集上逐个执行：
-
-    位移序列 → 小波分解 → 按频带归属分离出【呼吸分量 / 心搏分量】
-            → 交给 criteria_lib 算全部无参考准则
-            → 同时算金标指标（合成数据有干净源，可算真实指标）
-
-产出
-----
-<out>/matrix_results.csv   每个候选一行（跨样本聚合，中位数）
-<out>/matrix_raw.csv       每个 (候选, 样本) 一行（供后续校准/显著性检验）
-<out>/matrix_config.json   矩阵定义（可复现）
-
-为什么按"频带归属"分离
-----------------------
-DWT 天然按二进频带切分，各层频带与生理带并不对齐；文献的做法正是
-"把某些层归给呼吸、某些层归给心跳"（如杨秀芳 2013：dB3 第 7 层取呼吸、
-第 6 层取心跳）。因此本脚本把"每层频带划给谁"显式实现出来 ——
-这样"基的频率划分方式"本身就成为被比较的对象。
-
-重要口径
---------
-- 心搏分量在【展示带 0.7-3.0 Hz】上做分离与心率估计（而非 1.0-2.5 Hz），
-  否则 HR<60 BPM 的病例（心动过缓，如 50 BPM=0.833 Hz）落在带外、
-  任何基都无法恢复 —— 那会成为与实际"选基"无关的混杂因素。
-- pb2 的 f_resp 一律从【宽带信号】估计，所有候选共用同一个值，避免
-  f_resp 估计随基变化而污染比较。
-"""
-
+"""候选矩阵批量评估：对每个（方法, 带, 层）组合算指标，写 manifest.csv 与 matrix_config.json。"""
 from __future__ import annotations
 
 import argparse
@@ -75,18 +43,7 @@ def _overlap(a: tuple[float, float], b: tuple[float, float]) -> float:
 
 
 def assign_component(band: tuple[float, float]) -> str:
-    """把某一层的频带划给 呼吸 / 心搏 / 丢弃（"层归属"模式用）。
-
-    规则必须避免一个陷阱：近似带 aL = [0, nyq/2^L] 又宽又跨两个生理带，
-    若按"重叠长度"分配，低层数下 aL 会整个被划给心搏 —— 而呼吸基频
-    (0.2 Hz) 就在其中，导致"心搏分量"被呼吸淹没（实测 L4/L5 的
-    corr(card_est, card_gt) 仅 0.03/0.02）。因此改为：
-
-        带的上界 ≤ 0.7 Hz        → 呼吸（完全落在心搏带下缘之下）
-        带的下界 ≥ 0.7 Hz        → 心搏（完全落在心搏带之上）
-        跨越边界（如 a4/a5/a6）→ 划给呼吸（低频段毕竟以呼吸为主），
-                                  心搏分量因此会损失 0.7~0.78 Hz 的窄条
-    """
+    """把某一层的频带划给 呼吸 / 心搏 / 丢弃（"层归属"模式用）。"""
     lo, hi = band
     if hi <= DISPLAY_BAND[0]:
         return "resp"
@@ -175,19 +132,7 @@ def decompose_dwt(
     separation: str = "bandpass",
     need_full: bool = True,
 ) -> Optional[dict]:
-    """DWT 分解 →（呼吸, 心搏, 全重构, 系数, 各层心搏重构）。
-
-    separation="bandpass"（默认/主路径）：基只负责【去噪】，分带交给固定
-        滤波器（0.08-0.6 / 0.7-3.0）。这样"基"是唯一变量，且与文献
-        （Qiu 2023、Abdelfattah 2024 等的去噪范式）一致。
-    need_full=False（T4 提速）：跳过 `resp` 带通与 `card_per_res` 各层重构。
-        二者只被【通道 0】的准则用到（pb5/sm2 需要 resp；rc4 需要 card_per_res），
-        其余通道仅需 `card` 供 rc1（跨通道相干）—— 而 card_per_res 是 O(L²)
-        的 waverec 序列，在高层数下占单通道耗时的大头。
-    separation="levels"（结构对照）：用该基自身的二进频带划分来分离，
-        对应文献里生命体征类的做法（如杨秀芳 2013 各层取不同分量）。
-        注意低层数下近似带跨两个生理带，分离能力结构性受限。
-    """
+    """DWT 分解 →（呼吸, 心搏, 全重构, 系数, 各层心搏重构）。"""
     x = np.asarray(x, dtype=float)
     n = len(x)
     try:
@@ -260,17 +205,7 @@ def cwt_scales(wavelet: str, fs: float, band: tuple[float, float], n_scales: int
 
 
 def _icwt_like(coeffs: np.ndarray, scales: np.ndarray) -> np.ndarray:
-    """Torrence & Compo 式尺度求和重构（自实现，替代已移除的 pywt.icwt）。
-
-    PyWavelets 1.8.0 已不提供 `pywt.icwt`（实测 `hasattr(pywt, "icwt") == False`，
-    `_cwt` 模块亦无），故此处自实现：
-
-        x_rec(t) = Σ_j Re(W(s_j, t)) / sqrt(s_j) · dj,   dj = log2 尺度步长
-
-    该式省去了与【每个核各一个】的归一化常数。这不影响候选比较，因为本研究
-    全部金标指标（HR 主峰频率、尺度不变 SDR、Pearson 相关）与全部无参考准则
-    （能量比 / 相干 / IBI 合格率 / HPS 对数比值）都对线性增益不变。
-    """
+    """Torrence & Compo 式尺度求和重构（自实现，替代已移除的 pywt.icwt）。"""
     s = np.asarray(scales, dtype=float)
     dj = float(np.log2(s[-1] / s[0]) / (len(s) - 1)) if len(s) > 1 else 1.0
     return np.real(np.sum(np.asarray(coeffs) / np.sqrt(s)[:, None], axis=0)) * dj
@@ -369,11 +304,7 @@ _WORKER_CTX: dict = {}
 
 
 def _init_worker(ctx: dict) -> None:
-    """multiprocessing 初始化：把上下文（已切片的信号）注入每个工作进程。
-
-    只 pickle 一次（每个进程一份），而不是每个任务都传 —— 60 样本 × 8 通道
-    的信号约 11.5 MB，逐任务传会淹没计算。
-    """
+    """multiprocessing 初始化：把上下文（已切片的信号）注入每个工作进程。"""
     _WORKER_CTX.clear()
     _WORKER_CTX.update(ctx)
 
@@ -383,11 +314,7 @@ def _worker(cand: dict):
 
 
 def eval_one_candidate(cand: dict, ctx: dict):
-    """算一个候选在全部（已选）样本上的结果 → (聚合行, 逐样本行, 失败数)。
-
-    关键提速：只有【通道 0】需要完整分解产物；其余通道只取 `card` 供 rc1，
-    故 ch>0 传 need_full=False（跳过 resp 带通与 O(L²) 的各层重构）。
-    """
+    """算一个候选在全部（已选）样本上的结果 → (聚合行, 逐样本行, 失败数)。"""
     mix = ctx["mix"]                # (n_samples, C, T) 已按 sample_idx 切片
     mix_raw = ctx["mix_raw"]        # 同上；未开 RHC 时与 mix 相同
     card_gt = ctx["card_gt"]

@@ -1,34 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""E1：减圆心（DC offset / null point 修正）对比实验。
-
-审稿意见第 2 条的质疑
---------------------
-$z=A_s+A_c e^{j\\theta}$，减掉圆心 $A_s$ 只剩纯运动相量，解调对 $\\rho$ 免疫。
-"既然减圆心就消除零点，本文解决什么？"
-
-本实验的答案（三条，全部可测）
-------------------------------
-(1) **零点对常数偏移不变**：任何 $\\hat A_s\\ne A_s$ 都会留下残余静止相量
-    $\\delta=A_s-\\hat A_s$，运动相量转一圈必然与它反相，零点只是**换了相位**，
-    深度变成 $\\lvert\\lvert A_c\\rvert-\\lvert\\delta\\rvert\\rvert$。
-    要真正消除，必须 $\\rho_{\\rm res}=\\lvert\\delta\\rvert/\\lvert A_c\\rvert\to0$。
-(2) **真实数据上 $\\rho_{\\rm res}$ 并不小**：用同一条记录前后半段各自独立拟合圆心，
-    两者之差就是"漂移 + 估计误差"的直接度量（无需知道真值）。
-    报告 $\\rho_{\\rm res}$ 的分布，以及它导致的相位误差上界 $\\arcsin(\\rho_{\\rm res})$。
-(3) **物理尺度下的残余塌陷**：用原始包络的中位作**固定**阈值（不用残差自己的中位，
-    否则尺度无关的 $D$ 会把噪声也算成凹陷），数减圆心后仍低于该阈值的帧/事件。
-
-合成端的角色
-------------
-先证明：模型成立、SNR 足够时，圆拟合确实把零点压到 0——即审稿人的数学判断是对的。
-真实数据偏离这个理想，才是本文要刻画的东西。
-
-用法
-----
-    python exp_center_removal.py             # 合成 + 真实
-    python exp_center_removal.py --synthetic # 只跑合成
-"""
+"""E1：减圆心（DC offset / null point 修正）对比实验。"""
 from __future__ import annotations
 
 import argparse
@@ -104,11 +76,7 @@ def circle_windowed(z: np.ndarray, w: float = 10.0, hop: float = 5.0) -> np.ndar
 
 # --------------------------------------------------------------- 指标
 def dip_stats(sig: np.ndarray, ref_scale: float | None = None) -> tuple[float, int]:
-    """(凹陷帧占比, 深凹陷事件数)。
-
-    ref_scale=None  → 相对自身中位（尺度无关，论文原定义）
-    ref_scale=给定 → 用**固定物理尺度**（原始包络中位），可直接比较减圆心前后
-    """
+    """(凹陷帧占比, 深凹陷事件数)。"""
     env = np.abs(sig)
     med = float(np.median(env))
     ref = med if ref_scale is None else float(ref_scale)

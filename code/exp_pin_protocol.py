@@ -1,19 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""反推 Table II 的选 bin 协议。
-
-Table II 留了一组可当"指纹"的数：
-    零点率 13.0 / 48.1 / 62.3 %   → 7 / 26 / 33 条记录
-    |A_s|/R 中位 19.7 / 4.65 / 2.57
-    中位 n_deep 0 / — / 11（3.0 / 2.5 / 2.0 GHz 列）
-
-本脚本对 8 种选 bin 变体逐一重算，看哪一种同时命中这三个指纹。
-命中后即可确定"论文实际使用的协议"，供后续所有补充实验统一口径。
-
-用法
-----
-    python exp_pin_protocol.py
-"""
+"""反推 Table II 的选 bin 协议。"""
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图 T8-C：三个采样率上的覆盖率 Q，与表 T8-B 的预测边界对照。
-
-数据来源
-    10 Hz  : parralejo_coverage.csv（B）+ parralejo_Q_A.csv（A），376 条
-    20 Hz  : lei_coverage_20hz.csv，322 条
-    100 Hz : capsule_Q.csv，18 例
-"""
+"""图 T8-C：三个采样率上的覆盖率 Q，与表 T8-B 的预测边界对照。"""
 from __future__ import annotations
 
 import matplotlib

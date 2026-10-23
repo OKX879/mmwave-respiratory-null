@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Parralejo 前端 v2：用距离像选格（而非心搏带功率），并校验 ECG 金标。
-
-v1 的教训
---------
-1. 按"心搏带相位功率最大"选格会选到 1.5–3.4 m 的墙/桌，雷达 HR 全错；
-   而距离像峰值（0.62 m）选格的记录，HR 误差只有 1.4 bpm。
-2. 10 Hz 采样下，0.7–3.0 Hz 展示带会把 ~0.78 Hz 的呼吸谐波放进来
-   （bin 2 在宽带下给出 46.8 bpm），必须用 1.0–2.5 Hz。
-"""
+"""Parralejo 前端 v2：用距离像选格（而非心搏带功率），并校验 ECG 金标。"""
 from __future__ import annotations
 
 import numpy as np

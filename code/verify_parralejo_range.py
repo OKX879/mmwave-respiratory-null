@@ -1,3 +1,4 @@
+"""校验 parralejo 数据集的量程与门索引，对照 radar_chirpConfig.json。"""
 import json
 import pickle
 import zlib

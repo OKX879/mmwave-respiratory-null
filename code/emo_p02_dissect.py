@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""解剖 emo P02 反例：与其它被试对比信号几何、漂移速度、相位质量。
-
-每个 trial 计算：
-  energy_top1/top3    运动能量集中在最强 1/3 个 bin 的比例（多反射体 -> 分散）
-  coh_neighbor        最强 bin 与相邻 bin 的复数相关（多反射体/泄漏 -> 特征改变）
-  kasa_resid          呼吸带轨迹的圆拟合残差 / R（非圆轨迹 -> 大）
-  AsR                 |A_s| / R
-  drift_std_deg       10 s 慢变相量方向的圆标准差
-  drift_rate_deg_s    慢变相量方向的平均角速度
-  f_out_band          瞬时呼吸频率落在 0.08-0.65 Hz 之外的比例（相位参考失效 -> 高）
-  slip_rate           相位突跳（|Δφ|>0.2 rad/样本）比例
-  gain_at_null        null 时刻 |A_s(t)| / 中位 |A_s|（增益塌陷 -> 明显 <1）
-  Rbar_fixed / Rbar_drift(10s) / rel_err(f_dip vs f_resp)
-输出：null_crossdataset/emo_p02_dissect.csv/.json
-"""
+"""解剖 emo P02 反例：与其它被试对比信号几何、漂移速度、相位质量。"""
 from __future__ import annotations
 
 import json

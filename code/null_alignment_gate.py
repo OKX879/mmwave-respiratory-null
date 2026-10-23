@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""对齐度门槛：只把“几何零点”纳入相位锁定统计。
-
-门槛（manipulation check，非结果驱动）：
-  记录内所有深凹陷时刻的对齐度 cos∠(a, -A_s) 的中位 > 0.6，
-  且事件数 >= 5，才判为“几何零点记录”。
-
-同时报告“不加门槛”的数字，便于对比。
-输出：null_crossdataset/alignment_gate.csv / .json
-"""
+"""对齐度门槛：只把“几何零点”纳入相位锁定统计。"""
 from __future__ import annotations
 
 import json

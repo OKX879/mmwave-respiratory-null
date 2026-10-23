@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨数据集零点分析汇总图（三面板）。
-
-(a) 屏气窗内 vs 窗外的深凹陷率（220 段配对）
-(b) 合格记录的 Rbar 经验分布：固定相位 vs 漂移补偿（Parralejo 385 段；胶囊 9 段用竖线标出）
-(c) 各条件下锁定比例（Rbar>0.4）：固定 vs 漂移补偿
-"""
+"""跨数据集零点分析汇总图（三面板）。"""
 from __future__ import annotations
 
 from pathlib import Path

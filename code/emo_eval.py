@@ -1,36 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T5-4 emo_dataset 跨硬件测试（IWR6843 60 GHz，15 受试者 × 19 trial，PPG 金标）。
-
-⚠ 这是"两变量变化"，不是纯跨硬件（论文必须写明）
-------------------------------------------------------
-emo 的 `vital` 列**不是我们生产链的输出**，而是**参考论文自己的 MATLAB 链**：
-    range-FFT → MTI（逐帧减均值）→ 取幅度 top-5 距离 bin → 逐通道 unwrap(angle)
-    → 按幅度**加权平均相位**（非复数相干融合）→ 逐通道 detrend → 12 虚拟通道取均值
-    → 一阶差分  → 列 `vital`
-（照 `产品/external_validation/src_reference/mmwave_process.m`；fs = 100 Hz）
-因此与 capsule 相比同时变了两件事：**硬件（IWR6843 vs RS6240）+ 空间前端（不同实现）**。
-→ 只能回答"结论是否**鲁棒**"，不能当作"换硬件的干净复现"。
-
-输入域的选择（为什么用 `vital` 原样，不用 cumsum / heartbeat）
-------------------------------------------------------------
-- `heartbeat` 列已被参考代码 1.0–1.8 Hz 带通过，再送进本管线属**循环论证** → 不用。
-- `cumsum`（积分回位移域）会引入**积分漂移**（把 1/f 与随机游走放大）；且一阶差分与
-  末尾 0.7–3.0 Hz 带通同属 LTI、可交换，**候选间的相对排序在同域内定义**（与 CWT
-  归一化常数不影响候选比较同一论据）。→ **主臂用 `vital` 原样**。
-- 但项目备忘录里"cumsum 对照"是**未决问题**，故保留 `--mode cumsum` 作为**次要对照臂**，
-  用数据而不是论证来回答"换域会不会改变结论"。
-
-统一窗口：**每 trial 取前 20 s（2000 样本 @100 Hz）**，与 capsule 的 20 s 直接可比；
-`--window full` 提供"截断 vs 全长"敏感性对照。PPG:CSV 行数比恒为 **2.0000**（实测），
-即两路都裁掉了开头 10 s 注视阶段 → 无时间偏移。
-
-用法
-----
-    python emo_eval.py --mode vital            # 主臂
-    python emo_eval.py --mode cumsum           # 次要对照臂
-    python emo_eval.py --mode vital --window full --max-trials 30   # 敏感性
-"""
+"""emo_dataset 跨硬件测试（IWR6843 60 GHz，15 受试者 × 19 trial，PPG 金标）。"""
 
 from __future__ import annotations
 

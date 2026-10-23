@@ -1,17 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""C1: prospective (first half -> second half) check on an independent front end.
-
-The Lei dataset calibrates rule R1; the reviewer asks for an out-of-dataset
-check.  This script repeats the prospective split on the emotion dataset
-(100 Hz, 4.5 cm bins, different front end, five subjects, 38 trials) with the
-identical event definition, and applies the threshold calibrated on Lei
-without retuning.
-
-Usage
------
-    python exp_C1_emo_prospective.py
-"""
+"""C1: prospective (first half -> second half) check on an independent front end."""
 from __future__ import annotations
 
 from pathlib import Path

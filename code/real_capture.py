@@ -1,32 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T5-1 真实数据回放：从 capsule（RS6240，8 通道，ECG 金标）捕获生产链的位移信号。
-
-为什么需要这一步
-----------------
-`matrix_eval.py` 的输入是"位移序列"；而真实数据的原始素材是复数数据立方体
-（`patient_*.mat` 的 `data_all`）。二者之间隔着生产链的空间前端
-（静态杂波消除 → BinScorer/Viterbi 选 bin → 8 通道复数相干融合）。
-
-为了遵守"只变一件事"原则，**前端必须由生产链本身提供**，不能自己重写：
-因此本脚本直接 import `产品/benchmark_v1.py` 的 `run_pipeline_capture()`
-（它已被项目用于统一基准，含 t0 全局时间对齐），只做"跑一遍 + 落盘"。
-
-产出（每例一个 npz）
---------------------
-<out>/patient_N.npz
-    wide       完整链路融合的【宽带位移】(呼吸+心搏) —— 本研究的"mix"
-    cardiac    窄带心搏通路（1-2.5 Hz），供对照
-    gold_hr    ECG 金标心率（60000 / median(IBI)）
-    ecg_lbl    ECG R 峰样本索引（逐拍金标，供 beat F1 / IBI RMSE）
-    center_bin / angle / t0_wide / t0_card / final_hr / hr_conf
-
-用法
-----
-    python real_capture.py                # 全量 20 例
-    python real_capture.py --only 1 2     # 只跑指定例（用于冒烟）
-    python real_capture.py --force        # 覆盖已有缓存
-"""
+"""真实数据回放：从 capsule（RS6240，8 通道，ECG 金标）捕获生产链的位移信号。"""
 
 from __future__ import annotations
 

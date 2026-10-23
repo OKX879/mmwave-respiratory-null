@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""从单个 zip 分卷中提取完整包含的文件（分卷 zip 无法用标准库直接解压）。
-
-用途：emo 数据集 raw 是 15 个 3 GiB 分卷 + 末尾 .zip；首卷已完整包含 P01 的
-00-17.mat（18.mat 跨卷）。本脚本扫描本地文件头，把完整落在本卷内的条目解出，
-供试点分析使用；正式全量解压仍建议装 7-Zip。
-
-用法：
-  python emo_extract_volume.py --volume <z01> --out <dir> --prefix 01_raw_data/mmwave/P01/
-"""
+"""从单个 zip 分卷中提取完整包含的文件（分卷 zip 无法用标准库直接解压）。"""
 from __future__ import annotations
 
 import argparse

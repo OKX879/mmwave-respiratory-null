@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 20 Hz 平台的覆盖率 Q —— 先做单记录探针。
-
-预测（表 T8-B，展示带 0.7–3.0 Hz）：
-    约定 A：L <= floor(log2(20/3)) - 1 = 1  → L=1 时 a1 上界 5 Hz，覆盖满
-    约定 B：L >= ceil(log2(20/0.7)) - 1 = 4 → L=4 时 d4 下界 0.625 Hz，覆盖满
-因此 20 Hz 是"刚好跨过临界 4f_hi=12 Hz"的点：A 恢复可用（但只有 L=1），B 需要 4 层。
-"""
+"""Lei 20 Hz 平台的覆盖率 Q —— 先做单记录探针。"""
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""§4.13(e) 图 T8-L：允许的分解层数随采样率的变化。
-
-两条边界：
-  A（心搏取自近似带 aL）：L <= floor(log2(fs/f_hi)) - 1，仅当 fs >= 4*f_hi 可行
-  B（心搏取自细节带）  ：L >= ceil(log2(fs/f_lo)) - 1
-工程上限：N/2^L >= 2*(Lf-1)+1（sym4），30 s 记录。
-"""
+"""§4.13(e) 图 T8-L：允许的分解层数随采样率的变化。"""
 from __future__ import annotations
 
 import matplotlib

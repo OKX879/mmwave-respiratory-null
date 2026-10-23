@@ -1,52 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""无参考准则校准（对应《小波基系统选择_实验计划.md》§6 / 待办 T1）。
-
-要回答的问题
-------------
-候选矩阵给出的是【金标排名】（合成数据有干净源，可算 hr_mae / sdr / corr）。
-真实场景没有金标，只能用无参考准则去选基。那么在**知道答案**的合成数据上，
-无参考准则能不能预测出金标排名？——这就是本脚本要检验的东西，
-也是把工作从"填表"升级为"方法学贡献"、并规避"自证陷阱"的唯一办法。
-
-做法
-----
-对每个准则 c 与每个金标指标 g，算 Spearman 秩相关 rho(c, g)：
-
-- **候选级（scope=all / thr:*）**：先把每个候选在 60 个样本上的中位数聚合成
-  一行（36 个候选 → 36 个点），再算 rho。回答"这个准则能否跨候选排序"。
-- **样本级（scope=per-sample）**：在每个样本内部，跨 36 个候选算一次 rho，
-  再对所有样本取均值。回答"对某一条具体信号，这个准则能否挑出更好的基"。
-
-方向判定（关键，防止"只看绝对值"）
-----------------------------------
-每个准则声明 direction（up/down），每个金标指标也有自己的"好"方向：
-    rho 期望符号 = +1（同向）  或  -1（反向）
-    up   vs up   → 期望 +
-    up   vs down → 期望 -
-    down vs up   → 期望 -
-    down vs down → 期望 +
-只有【符号正确 + |rho| 显著（p<0.05）+ |rho|>=0.4】才算"通过"。
-符号不对 = 该准则会把基选反，无论 |rho| 多大都要淘汰。
-
-为什么要分 scope
-----------------
-F1（已确立结论）指出：不阈值时正交小波的 wavedec→waverec 是恒等变换，
-18 个 `none` 候选结果**逐位相同**，基完全不起作用。若在全集上算 rho，
-这 18 个并列点会稀释真实的"选基"信号。因此把 **universal-soft 子集
-（18 候选 = 6 基 × 3 层，此时基才通过阈值收缩真正起作用）作为主判据**，
-全集结果作为对照一并输出。
-
-输出
-----
-<out>/criteria_calibration.csv    长表：criterion × scope × gold → rho / p / 判定
-<out>/criteria_calibration.json   汇总（保留 / 淘汰清单及理由）
-
-用法
-----
-    python calibrate_criteria.py --raw matrix_out/matrix_raw.csv --out-dir matrix_out
-"""
-
+"""无参考准则校准：读 matrix_out/matrix_raw.csv，输出 criteria_calibration.json/csv 与阈值。"""
 from __future__ import annotations
 
 import argparse

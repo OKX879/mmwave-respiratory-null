@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""emo（100 Hz）平台补测覆盖率 Q —— 给 100 Hz 那个点加样本。
-
-为什么可以补
-------------
-Q 是"某频率处的幅度保留率"，只取决于 DWT 的频带划分，与输入是速度域还是位移域无关
-（速度域只多乘一个 |jω|，比值里约掉）。emo 的 `vital` 列是速度域位移，正好可用。
-金标取同步 PPG 的逐拍中位心率（与 emo_eval 同参数）。
-"""
+"""emo（100 Hz）平台补测覆盖率 Q —— 给 100 Hz 那个点加样本。"""
 from __future__ import annotations
 
 import numpy as np

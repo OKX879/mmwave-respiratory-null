@@ -1,17 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T5-5 跨数据集/跨域汇总：合成 · capsule · emo(vital) · emo(cumsum) 四方对照。
-
-回答的问题（与 F15 的四个迁移问题同构，但这次把 emo 加进来）：
-  1) 绝对精度（候选级池中位）—— 各数据集/域差多少？
-  2) L ≤ 4 结构性边界 —— 是否在 emo 上也复现？（配对 Δ 阈值化 − none）
-  3) 因子 η² 次序 —— 是否一致？分析单位一律为【候选】
-  4) KEEP 准则 ρ(准则, HR_MAE) —— 方向是否一致？（universal-soft 子集，候选级）
-  5) 边界模式零效应 —— L=4 配对
-  6) ★ 域对照（vital vs cumsum）—— 一阶差分域是否改变结论？
-
-用法：python emo_compare.py
-"""
+"""跨数据集/跨域汇总：合成 · capsule · emo(vital) · emo(cumsum) 四方对照。"""
 from __future__ import annotations
 
 import json

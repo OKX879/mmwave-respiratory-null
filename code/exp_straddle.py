@@ -1,29 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""E2：straddle / scalloping 混杂控制实验。
-
-审稿意见第 4 条
---------------
-改带宽不只改变"bin 里混进多少静态杂波"，也改变 bin 网格相对目标的位置
-（straddle / scalloping），后者会让 rho 非单调变化。必须排除。
-
-做法
-----
-1. 用 **16× 零填充**求精细距离像（3 GHz 下网格 3.1 mm），在 ±0.3 m 窗内
-   定位目标真实距离 $\\hat r$，分数偏移 $u=(\\hat r-b\\,\\Delta R)/\\Delta R\\in[-0.5,0.5]$。
-2. 先看 $\\lvert u\\rvert$ 与 $\\lvert A_s\\rvert/R$、$D$、$n_{\\rm deep}$ 的相关——若强，混杂成立。
-3. **控制实验**：把复时间序列改在"目标真实距离"上取值（零填充谱上的插值，
-   等价于 DTFT 任意点求值），网格摆放被消除，只剩分辨率差异。
-   比较 bin 取值 vs 目标中心取值下，三带宽的 $\\lvert A_s\\rvert/R$ 与零点率是否保持。
-
-同时回答审稿意见 4b（机制叙述与数据方向不一致）：
-把 $\\lvert A_s\\rvert$ 与 $\\lvert A_c\\rvert$（=圆拟合半径）分开报，看比值的变化
-到底来自分子还是分母。
-
-用法
-----
-    python exp_straddle.py
-"""
+"""E2：straddle / scalloping 混杂控制实验。"""
 from __future__ import annotations
 
 import sys

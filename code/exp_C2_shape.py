@@ -1,33 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""C2: shape test -- geometric cancellation versus amplitude modulation.
-
-Why this test exists
---------------------
-The breath-hold experiment shows that collapses disappear when breathing stops.
-A reviewer can object that this is circular: with no rotation there is no
-envelope swing either, so the experiment cannot separate a geometric null from
-a plain amplitude modulation.  The fix is a *shape* test that needs no rho and
-no kappa, and therefore also works on the 31.25 cm breath-hold bins.
-
-Two signatures separate the mechanisms at the dip itself:
-
-  cusp exponent p   geometric (rho -> 1) gives |z| ~ |theta - pi|, and since
-                    theta(t) is locally linear in t, |z| ~ |t - t0| -> p = 1.
-                    Amplitude modulation gives a smooth minimum -> p = 2.
-                    Estimated scale-free as p = -log2(S), with
-                    S = [e(d) - e0] / [e(2d) - e0], e = |z| / median.
-  phase step        a trajectory passing through the origin turns by ~pi.
-                    Amplitude modulation moves the phase smoothly.
-
-Both statistics are validated on two synthetic worlds passed through the
-*identical* detector: a two-phasor geometric world and an amplitude-modulated
-world tuned to produce the same dip rate and depth.
-
-Usage
------
-    python exp_C2_shape.py            # real data + both synthetic controls
-"""
+"""C2: shape test -- geometric cancellation versus amplitude modulation."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -149,13 +122,7 @@ def synth_geometric(n_trials=60, snr_db=25.0, rng=None):
 
 
 def synth_am(n_trials=60, snr_db=25.0, rng=None):
-    """Amplitude-modulated world: the motion phasor fades, the arc never reaches antiphase.
-
-    The swing is kept below pi so the trajectory cannot pass through the
-    origin; the envelope dips only because the motion amplitude collapses to
-    ~5% of its maximum.  This is the alternative mechanism a reviewer can
-    propose for the same envelope statistics.
-    """
+    """Amplitude-modulated world: the motion phasor fades, the arc never reaches antiphase."""
     rng = rng or np.random.default_rng(1)
     t = np.arange(int(60 * FS)) / FS
     rows = []

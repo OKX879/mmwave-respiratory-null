@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""导出 §4.13 的逐记录 Q 明细（376 行，一条记录一行）。
-
-数据来源分两部分：
-  1. 传递增益 Q 直接取自已跑完的 parralejo_coverage.csv（sym4，6 层 × 2 规则）；
-  2. bin / 距离 / ECG 心率需要重新读盘，因为 coverage 表里没存这几列。
-
-全基全层的原始表仍是 parralejo_coverage.csv（31 584 行），本文件是它的
-"一条记录一行"的整理版，供补充材料直接附上。
-"""
+"""导出 §4.13 的逐记录 Q 明细（376 行，一条记录一行）。"""
 from __future__ import annotations
 
 from pathlib import Path

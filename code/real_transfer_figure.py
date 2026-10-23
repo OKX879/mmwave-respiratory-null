@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T5 迁移对比图：合成 vs 真实（capsule）四联图。
-
-四张面板分别回答 T5 的四个迁移问题：
-  (a) 层数曲线：L≤4 安全边界是否在真实信号上复现？（各自归一化到自身 none 水平）
-  (b) 因子 η²：因子**次序**是否复现？量级是否缩小？
-  (c) 准则 ρ：KEEP 集与反预测器名单是否复现？（真实 vs 合成散点）
-  (d) 高带能量占比：解释"为什么基在 L=4 的区分度没有迁移"
-
-用法：python real_transfer_figure.py
-"""
+"""迁移对比图：合成 vs 真实（capsule）四联图。"""
 from __future__ import annotations
 
 import json

@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""用 emo 数据替代活体采集：D 分布 + 载频裁决所需的表观摆幅。
-
-输出：null_crossdataset/emo_live_replacement.csv / .json
-"""
+"""用 emo 数据替代活体采集：D 分布 + 载频裁决所需的表观摆幅。"""
 from __future__ import annotations
 
 import json

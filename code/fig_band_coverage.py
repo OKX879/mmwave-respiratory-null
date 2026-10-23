@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""图（§4.3 频带覆盖示意）：为什么 L ≤ 4 是安全边界。
-
-100 Hz 采样（f_nyq = 50 Hz）。近似带上界 a_L = f_nyq / 2^L。
-心搏展示带 0.7–3.0 Hz。当 L=4 时 a_4 = 3.125 Hz 刚好覆盖心搏带上界；
-L=5 时 a_5 = 1.5625 Hz，心搏带 [1.5625, 3.0] 落进被阈值化的细节带 d_5。
-"""
+"""图（§4.3 频带覆盖示意）：为什么 L ≤ 4 是安全边界。"""
 from __future__ import annotations
 
 import matplotlib

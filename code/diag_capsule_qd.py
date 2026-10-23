@@ -1,29 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Q_D 在 20 条 capsule 记录上到底有没有触发？——逐 bin 复核 D 的取值。
-
-问题（审稿风险）
-----------------
-正文式 (9) 的惩罚项是 $w_D\\min(D/D_{ref},1)$，而 $D$ 在 Lei 的 161 条记录里有
-116 条恒为 0。若 capsule 也类似，则"18/20 逐位相同"就**不是 Q_D 保守**，
-而是惩罚项从未生效。必须用同一口径实测，而不是推断。
-
-口径
-----
-与 `产品/cardiac_core/spatial/bin_scorer.py` 的 `dip_ratio` 完全一致：
-  逐通道  D_c = mean(|z| < 0.3*median|z|)（暗通道守卫 median>1e-3）
-  逐 bin  D   = median_c D_c
-两种时间窗：
-  full = 整条记录 3000 帧（30 s，与论文 §V 的 D 口径一致）
-  win  = 生产链实际使用的那一段 [t0_wide, t0_wide+2000)（20 s，取自 patient_*.npz）
-另给出两条记录级判据：
-  D@sel   = 记录自己的 (angle, center_bin) 上的 D
-  max D   = 全部 3 角度 × 30 bin 的最大值（惩罚可能触发的上界）
-
-用法
-----
-    python diag_capsule_qd.py
-"""
+"""Q_D 在 20 条 capsule 记录上到底有没有触发？——逐 bin 复核 D 的取值。"""
 from __future__ import annotations
 
 from pathlib import Path

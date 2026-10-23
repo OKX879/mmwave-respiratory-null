@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 20 Hz 平台的覆盖率 Q 全量扫描（第三个采样率点）。
-
-与 10 Hz / 100 Hz 两点合起来检验表 T8-B：
-    A（心搏取自 aL）：L <= floor(log2(fs/f_hi)) - 1
-    B（心搏取自细节带）：L >= ceil(log2(fs/f_lo)) - 1
-20 Hz 恰好跨过临界 4*f_hi = 12 Hz，因此 A 应"恢复可用但很浅"，B 应"需要 3–4 层"。
-
-两人各有 ECG，故对同一条雷达记录给出两条参考线（T1/T2），不取平均。
-"""
+"""Lei 20 Hz 平台的覆盖率 Q 全量扫描（第三个采样率点）。"""
 from __future__ import annotations
 
 from pathlib import Path

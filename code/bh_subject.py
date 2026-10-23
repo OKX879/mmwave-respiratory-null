@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""稳健性验证 2：屏气对照按“被试”聚合，避免 440 段的伪重复。
-
-数据：null_crossdataset/parralejo_summary.csv（每段 rate_in / rate_out / bh_dur）
-做法：
-  1. 每个被试的两个 Rest 段合并：rate = sum(n) / sum(duration) * 60；
-  2. 110 个被试做配对 Wilcoxon（窗内 vs 窗外）；
-  3. Poisson GLM：count ~ inside，offset=log(duration)，按被试聚类稳健标准误。
-输出：null_crossdataset/bh_subject.json
-"""
+"""稳健性验证 2：屏气对照按“被试”聚合，避免 440 段的伪重复。"""
 from __future__ import annotations
 
 import json

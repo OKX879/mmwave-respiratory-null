@@ -1,24 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""跨数据集零点分析：capsule（20 例，100 Hz）+ Parralejo 110 人（440 段，10 Hz）。
-
-固定口径（在跑全量前锁定，不因结果改）
-------------------------------------
-1. 目标 bin：通道复数平均后，取宽带运动能量（时间标准差）最大者。
-   Parralejo 只在 bin 1-6（0.31-1.87 m）内搜索（协议把雷达放在 ~0.6 m）。
-2. 深凹陷：|z| 包络局部极小（间隔 >=0.25 s、prominence >=0.15 sigma）
-            且 |z| < 0.35 x 中位包络。
-3. 呼吸相位：z 复带通 0.1-0.6 Hz -> z_bp；相位 = unwrap(angle(z_bp)) mod 2*pi。
-   （对照口径 A：Re(z_bp) 的 Hilbert 相位，仅用于敏感性比较。）
-4. 锁定：Rbar > 0.4 且事件数 >= 5。
-5. 屏气对照：仅用 Rest 段的 non_breathing_ts；比较窗内/窗外的深凹陷率（次/分钟）。
-
-输出
-----
-null_crossdataset/capsule_B.csv
-null_crossdataset/parralejo_summary.csv
-null_crossdataset/summary.json
-"""
+"""跨数据集零点分析：capsule（20 例，100 Hz）+ Parralejo 110 人（440 段，10 Hz）。"""
 from __future__ import annotations
 
 import json

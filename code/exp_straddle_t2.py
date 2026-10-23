@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""straddle 控制实验（V2 协议，与 Table II 同口径）。
-
-对每条记录：
-  1. 按 Table II 协议选 bin（整段 std 最大，窗 [r-0.25, r+0.05]）；
-  2. 用 16× 零填充在 ±0.30 m 内定位该目标真实距离 r̂，算分数偏移
-     u = (b·ΔR - r̂)/ΔR（|u|>0.5 表示最近 bin 已换）；
-  3. **目标中心插值**：在零填充谱上按 r̂ 取证，重算零点指标——
-     网格摆放被消除，只剩分辨率差异。
-"""
+"""straddle 控制实验（V2 协议，与 Table II 同口径）。"""
 from __future__ import annotations
 
 from pathlib import Path

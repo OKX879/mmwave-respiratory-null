@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""D 的前瞻性检验：前 30 s 选格并算 D，后 30 s 数深凹陷。
-
-这样 D 与“是否存在零点”在时间上不重叠，避免用同一包络先选记录再比较 D 的循环。
-输出 null_crossdataset/lei_D_prospective.csv 与终端统计。
-"""
+"""D 的前瞻性检验：前 30 s 选格并算 D，后 30 s 数深凹陷。"""
 from __future__ import annotations
 
 from pathlib import Path

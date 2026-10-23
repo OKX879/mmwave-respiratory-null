@@ -1,18 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补充分析：漂移补偿相位 + ACC 运动控制。
-
-为什么要漂移补偿
-----------------
-双相量模型的零点条件是 a(t) = -A_s(t)。若 A_s 在 50 s 内缓慢转动/漂移，
-"固定坐标系下的呼吸相位"就不会锁定；应改折叠到 a(t) 相对 -A_s(t) 的夹角。
-本脚本同时报告：
-  Rbar_fixed  固定坐标系（主口径）
-  Rbar_drift  相对 -A_s(t) 的夹角（探索性，窗口 10 s）
-  ACC 窗内/窗外运动强度（屏气对照的混淆控制）
-
-输出：null_crossdataset/{capsule_ext.csv, parralejo_ext.csv, summary_ext.json}
-"""
+"""补充分析：漂移补偿相位 + ACC 运动控制。"""
 from __future__ import annotations
 
 import json

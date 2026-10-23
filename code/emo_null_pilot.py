@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""emo 数据集零点试点（P01，17 个 trial）。
-
-口径与 null_crossdataset.py 完全一致：
-- 4.5 cm 距离格、100 Hz；丢弃前 10 s 注视段；
-- 12 虚拟通道，按官方代码对 j=2:4:10（1-based）的通道做 180° 极性翻转；
-- 256 点距离 FFT；目标 bin 只在 0.4-1.2 m 内搜索；
-- 深凹陷：包络局部极小（>=0.25 s、prominence 0.15 sigma）且 |z| < 0.35 x 中位；
-- 呼吸相位 B：z 复带通 0.1-0.6 Hz -> unwrap(angle)；
-- 锁定：Rbar > 0.4 且事件数 >= 5。
-"""
+"""emo 数据集零点试点（P01，17 个 trial）。"""
 from __future__ import annotations
 
 import json

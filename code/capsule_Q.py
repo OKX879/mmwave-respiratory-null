@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""capsule（100 Hz）平台的覆盖率 Q —— 三点验证的最后一点。
-
-输入取 real_data/patient_*.npz 的 `wide`（宽带位移，即小波环节的输入），
-参考线取 `gold_hr`（ECG 的 60000/median(IBI)）。
-
-预测（表 T8-B，心搏带 1.0–2.5 Hz）：
-    A：L <= floor(log2(100/2.5)) - 1 = 4
-    B：L >= ceil(log2(100/1.0)) - 1 = 6
-"""
+"""capsule（100 Hz）平台的覆盖率 Q —— 三点验证的最后一点。"""
 from __future__ import annotations
 
 from pathlib import Path

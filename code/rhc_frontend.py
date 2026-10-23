@@ -1,32 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""生产链 RHC 前端的薄封装（T3）。
-
-为什么用"薄封装"而不是"重新实现"
-------------------------------
-T3 的要求是"与生产链对齐"。若在研究目录里重写一份 RHC，两份实现会各自演化，
-"对齐"就成了口号。因此这里**按路径加载生产链的同一份模块**
-（`runtime/analysis/respiratory_harmonic_cancellation.py`），只做接口适配。
-
-RHC 在本研究中的角色
---------------------
-只取它的**谐波消除前端**（`process()["x_heart"] = 原始位移 − 呼吸谐波模型`），
-**不使用它的心率估计输出**——否则研究链的估计量就不只是"小波环节"了
-（违反"只变一件事"原则）。RHC 内部的 HR 估计仅用于它自身的谐波保护决策，
-不依赖任何金标。
-
-用法
-----
-    from rhc_frontend import make_rhc_frontend
-    front = make_rhc_frontend(fs=100.0)
-    out = front(x)            # x: (N,) 位移序列(mm)
-    x_heart = out["x_heart"]  # 谐波消除后的残差
-    trust = out["rhc_trust"]  # 呼吸跟踪可信度(0-1)，低值表示 RHC 输出不可采信
-
-自检
-----
-    python rhc_frontend.py
-"""
+"""生产链 RHC 前端的薄封装（T3）。"""
 
 from __future__ import annotations
 
@@ -55,10 +29,7 @@ def _load_prod_module():
 
 
 def make_rhc_frontend(fs: float):
-    """返回一个 RHC 前端函数 f(x) -> process 结果 dict。
-
-    返回的 dict 至少含 "x_heart"（残差）与 "rhc_trust"（呼吸跟踪可信度）。
-    """
+    """返回一个 RHC 前端函数 f(x) -> process 结果 dict。"""
     global _MOD
     if _MOD is None:
         _MOD = _load_prod_module()

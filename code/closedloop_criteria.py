@@ -1,35 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""T2b 闭环验证：只用"通过校准的无参考准则"选基，能否选到金标最优？
-
-为什么必须做闭环（而不只是看 ρ）
---------------------------------
-T1（calibrate_criteria.py）只证明了"准则与金标排名**相关**"。但方法论要成立，
-必须回答一个更强的问题：**照准则去选，选出来的基是不是真的更好？**
-相关性高 ≠ 选得对（例如几条准则互相抵消、或最优区太窄）。
-
-为什么必须做 train/test 切分（规避自证陷阱）
---------------------------------------------
-T1 的"哪些准则通过"这一步，是在**全部 60 条样本**上算出来的。
-如果闭环也在同一批样本上评，就是拿答案去对答案 —— 自证陷阱。
-因此本脚本默认：
-  1) 在 **train 半**（48 条中取偶数位样本）上重新做一次准则筛选；
-  2) 用筛出的准则，在 **test 半**（奇数位样本）上做闭环评估。
-两个数字都报告（train 上的"乐观值" vs test 上的"诚实值"），差距就是过拟合量。
-
-闭环的两种口径
---------------
-- **Level A（全局选基）**："选一个基用在整个产品上"。对候选级（跨样本中位数）
-  做 Borda 秩聚合 → 得第一名的候选，与金标最优候选比。
-- **Level B（逐样本选基）**：每条信号现场选一个基。对每个样本内部的 18 个候选
-  做 Borda → 取第一名，与"逐样本 oracle（每样本金标最优）"比。
-
-决策规则：**Borda 秩聚合**（不引入线性权重 → 不新增调参点，遵守项目既有约定）。
-
-用法
-----
-    python closedloop_criteria.py --raw matrix_out/matrix_raw.csv --out-dir matrix_out
-"""
+"""b 闭环验证：只用"通过校准的无参考准则"选基，能否选到金标最优？"""
 
 from __future__ import annotations
 
@@ -133,11 +104,7 @@ def level_a_global(df: pd.DataFrame, sample_ids: list[int], scope: str,
 
 def level_b_persample(df: pd.DataFrame, sample_ids: list[int], scope: str,
                       keys: list[str], global_best_id: str, fixed_id: str) -> dict:
-    """逐样本选基：每样本内 Borda → top1；与 oracle / 全局最优 / 全体中位 / 最差比。
-
-    fixed_id = Level A（全局准则选基）选出的那个配置 —— 它是**现实可行的替代方案**
-    （"全场景用同一个准则选出的配置"），是判断逐样本选基是否有价值的关键对照。
-    """
+    """逐样本选基：每样本内 Borda → top1；与 oracle / 全局最优 / 全体中位 / 最差比。"""
     sub = df[df["sample_id"].isin(sample_ids) & scope_mask(df, scope)]
     rows = []
     for sid, g in sub.groupby("sample_id"):
@@ -194,11 +161,7 @@ def creds_agg(df: pd.DataFrame, ids: list[int], scope: str, keys: list[str]) -> 
 
 def level_a_holdout(df: pd.DataFrame, train_ids: list[int], test_ids: list[int],
                     scope: str, keys: list[str]) -> dict:
-    """留出协议下的全局选基：**在 train 上按准则选，在 test 上评**（无信息泄漏）。
-
-    为什么必须这样：早期版本在 test 集上同时"算 Borda 选基"与"评金标"，
-    等于用留出样本做选择 —— 会系统性高估 Level A（把 +1.8 的差距报成 +0.0）。
-    """
+    """留出协议下的全局选基：**在 train 上按准则选，在 test 上评**（无信息泄漏）。"""
     tr = creds_agg(df, train_ids, scope, keys)
     te = creds_agg(df, test_ids, scope, keys)
     nan = float("nan")
@@ -234,12 +197,7 @@ def level_a_holdout(df: pd.DataFrame, train_ids: list[int], test_ids: list[int],
 
 
 def run_kfold(df: pd.DataFrame, args, out_dir: Path) -> int:
-    """K 折重复闭环：每折在 K-1 折上筛准则、在留出折上评闭环，报告均值±标准差。
-
-    为什么需要：单次切分只能给出**一个**数字（如 train 集差 +1.82 BPM），
-    无法回答"这是切分运气还是真实水平"。K 折给出分布，也顺带给出
-    **准则筛选的稳定性**（每个准则被选中的折数 / K）。
-    """
+    """K 折重复闭环：每折在 K-1 折上筛准则、在留出折上评闭环，报告均值±标准差。"""
     all_ids = sorted(df["sample_id"].unique().tolist())
     K = args.folds
     # 交错分折：按索引取模，保证每折都覆盖 (SNR,HR,RR) 网格（数据集按块排列）

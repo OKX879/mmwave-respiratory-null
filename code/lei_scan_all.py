@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 数据集全扫描：9 个位置 × 6 次重复 × 3 带宽。
-
-输出 null_crossdataset/lei_all_positions.csv / .json
-"""
+"""Lei 数据集全扫描：9 个位置 × 6 次重复 × 3 带宽。"""
 from __future__ import annotations
 
 import json

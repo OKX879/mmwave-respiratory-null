@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Parralejo 110 人数据集的前端可行性探针（10 Hz、31.2 cm 距离格）。
-
-目的：在把这条数据接进小波实验之前，先回答一个问题——
-      在 10 Hz / 31 cm 格上，能不能得到与 ECG 对得上的心率？
-若不能，人群扩展就没有意义，应如实记录为"该平台不可用于本框架"。
-
-只做最少的处理：通道复数平均 → 相位 → 去趋势 → 带通 → 谱峰。
-扫 bin、扫心搏带，报告雷达 HR 与 ECG HR 的差。
-"""
+"""Parralejo 110 人数据集的前端可行性探针（10 Hz、31.2 cm 距离格）。"""
 from __future__ import annotations
 
 import pickle

@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""稳健性验证 1：漂移补偿窗口敏感性 + 漂移幅度与固定相位锁定的关系。
-
-对三个平台（capsule 20 例、Parralejo 440 段、emo P01 18 trial）分别计算：
-  Rbar_fixed        固定坐标系呼吸相位
-  Rbar_drift(W)     a(t) 相对 -A_s(t) 的夹角，A_s 用 W 秒滑动平均（W=5/10/15/20）
-  drift_deg(W)      A_s 方向的圆标准差（度），衡量背景漂移大小
-
-输出：null_crossdataset/window_sensitivity.csv / .json
-"""
+"""稳健性验证 1：漂移补偿窗口敏感性 + 漂移幅度与固定相位锁定的关系。"""
 from __future__ import annotations
 
 import json

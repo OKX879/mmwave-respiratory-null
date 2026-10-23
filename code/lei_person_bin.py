@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""按数据集给出的真实距离约束选 bin，复核分辨率效应。
-
-每个位置的真实径向距离 r1/r2 来自数据集 Table 1；胸壁前表面约在 r-0.1 m，
-因此候选窗取 [r-0.25, r+0.05]。两目标窗口取并集。
-"""
+"""按数据集给出的真实距离约束选 bin，复核分辨率效应。"""
 from __future__ import annotations
 
 from pathlib import Path

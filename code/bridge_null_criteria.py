@@ -1,34 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""桥接实验：小波准则库能否充当多径零点论文里的 bin 级判据？
-
-两篇论文各自有一个"bin 级打分"：
-    A. 多径零点（论文 v5）：D（深凹陷占比）、n_deep、|A_s|/R（静态/呼吸比）
-    B. 小波选择（论文 v0.1）：14 个无参考准则（pb1 心搏带集中度、sm4 HPS 突出度…）
-
-用户提出的战略判断：B 的准则库"天然是 A 的 D/R 判据的候选集"。
-本脚本把这句话变成可证伪的实验，回答三件事：
-
-  Q1 重叠还是正交？——在**同一条记录内部**（控制几何/带宽/受试者）算
-     Spearman(准则, D)、(准则, n_deep)、(准则, |A_s|/R)。跨记录合并会被
-     几何差异混淆，必须逐记录算再汇总。
-  Q2 Zhu 的"生理频带能量比选 bin"是不是"小波子带能量评分的非小波实现"？
-     ——同一批 bin 上同时算
-       rho_F：Welch 谱在 [0.1,2.5] Hz 的能量占比（傅里叶带能量比，Zhu 式）
-       rho_W：DWT 各子带系数能量在 [0.1,2.5] Hz 的占比（小波子带能量评分）
-     若两者逐记录高度一致，则这句话在数值上成立。
-  Q3 零点有没有代价？——逐 bin 的 PSD 主峰 HR 与 ECG 金标比较，按记录内
-     D 的分位分组，看高 D（多零点）bin 的 HR 误差是否系统性更大。
-     （只在两目标距离差 ≥0.2 m 的位置上做，否则 bin↔人无法归属。）
-
-数据：Lei 2024 原始 ADC（20 Hz），9 位置 × 3 带宽 × 6 重复，候选 bin 取
-各位置真实距离 ±0.25 m 的窗口（与 lei_person_bin 同口径）。
-
-用法
-----
-    python bridge_null_criteria.py            # 全量
-    python bridge_null_criteria.py --only 1 3 # 冒烟（只跑两个位置）
-"""
+"""桥接实验：小波准则库能否充当多径零点论文里的 bin 级判据？"""
 from __future__ import annotations
 
 import argparse
@@ -76,11 +48,7 @@ def band_ratio_fourier(x: np.ndarray, fs: float = FS, band: tuple = VITAL) -> fl
 
 
 def band_ratio_wavelet(coeffs, L: int, fs: float = FS, band: tuple = VITAL) -> tuple[float, float, float]:
-    """小波子带能量评分：与 band_ratio_fourier 同一频带，但在倍频程子带上算。
-
-    返回 (带内占比, 去掉近似带后的占比, 近似带占全部系数能量的比例)。
-    第三项是"二进最低带必然含直流"的量化：它越高，小波口径与傅里叶口径越不可比。
-    """
+    """小波子带能量评分：与 band_ratio_fourier 同一频带，但在倍频程子带上算。"""
     bands = [(0.0, fs / 2 ** (L + 1))] + [(fs / 2 ** (j + 1), fs / 2 ** j)
                                           for j in range(1, L + 1)]
     e = np.array([float(np.sum(np.asarray(c) ** 2)) for c in coeffs])
@@ -183,12 +151,7 @@ def build_rows(only: set | None) -> pd.DataFrame:
 
 # ---------------------------------------------------------------------------
 def per_record_rho(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
-    """逐记录 Spearman，并给出「控制 |A_s|/R 后的偏相关」。
-
-    偏相关的必要性：D 与 |A_s|/R 本身同向（静态强 → 相对median 的深凹陷多），
-    所以"准则与 D 相关"可能只是"准则与信号强弱相关"的伪装。
-    在秩上做一阶偏相关即可剥离这一项。
-    """
+    """逐记录 Spearman，并给出「控制 |A_s|/R 后的偏相关」。"""
     recs = []
     keys = ['layout', 'pos', 'bw_GHz', 'repeat']
     for key, g in df.groupby(keys):

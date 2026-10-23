@@ -1,19 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""统一口径后的减圆心分析（与 Table II 完全同口径）。
-
-口径已由 exp_pin_protocol.py 反推确定（V2）：
-    候选窗  [r-0.25, r+0.05]（两个目标合并，按 int 取整）
-    选 bin   整段 60 s 的复数标准差最大
-    事件     包络局部极小、< 0.35×中位、间隔 ≥0.25 s、prominence ≥0.15σ
-    零点记录 n_deep ≥ 5
-该协议精确复现 Table II 的 7/26/33 与 |A_s|/R = 19.74/4.65/2.57。
-
-输出
-----
-exp_out/center_removal_table2.csv   逐记录结果
-    控制台：与 Table II 并排的零点率表、q05、rho_res、Bessel 偏差、包络呼吸带占比
-"""
+"""统一口径后的减圆心分析（与 Table II 完全同口径）。"""
 from __future__ import annotations
 
 from pathlib import Path

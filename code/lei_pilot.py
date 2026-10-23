@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Lei 2024 双人数据试点：同一位置、三种带宽，检验零点几何/相位与 D 的区分度。
-
-.bin: int16 交织 I/Q，1200 帧 × 3 TX × 4 RX × 200 采样。
-"""
+"""Lei 2024 双人数据试点：同一位置、三种带宽，检验零点几何/相位与 D 的区分度。"""
 from __future__ import annotations
 
 import json
