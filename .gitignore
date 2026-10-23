@@ -1,0 +1,41 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# ---- Data (not distributed; see DATA.md) ----
+matrix_out*/
+real_data/
+real_matrix/
+real_pilot/
+real_rc2/
+synthetic_data/
+synthetic_data_clean/
+emo_matrix/
+emo_matrix_full/
+null_probe_out/
+null_crossdataset/
+exp_out/
+
+# ---- LaTeX build products ----
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

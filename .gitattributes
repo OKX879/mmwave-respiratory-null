@@ -1,0 +1,10 @@
+# Normalise line endings on checkout, commit as-is
+* text=auto
+
+# Binary
+*.pdf binary
+*.png binary
+*.jpg binary
+
+# Shell scripts must keep LF
+*.sh text eol=lf

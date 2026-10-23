@@ -1,0 +1,13 @@
+# Core numerics
+numpy>=1.24
+scipy>=1.10
+
+# Figures
+matplotlib>=3.7
+
+# Data handling
+pandas>=2.0
+h5py>=3.8
+
+# Wavelet decomposition (bottleneck / CWT sweeps)
+PyWavelets>=1.4
